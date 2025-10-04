@@ -189,6 +189,10 @@ public class Edificio {
         return espacios_ocupados*100/capacidad_maxima;
     }
     
+    public int porcentajeCiudadanosSinRobot(){
+        return (espacios_ocupados-CiudadanosConRobot())*100/espacios_ocupados;
+    }
+    
     public int CiudadanosConRobot(){
         int CiudadanosConRobot = 0;
         if (!habitantes.isEmpty()){

@@ -4,7 +4,11 @@
  */
 package logica;
 import java.util.ArrayList;
+
 import modelo.Robot;
+import modelo.Cargaficio;
+
+import java.util.Random;
 
 /**
  *
@@ -75,6 +79,37 @@ public class AdmRobots {
             }
         return total_robots_alerta;
     }
+    
+    public boolean conectarRobots(AdmCargaficios AdmCargaficios){
+        for (Robot RobotActual: listaRobots){
+            if (!RobotActual.isEncendido() && !RobotActual.isConectado()){
+                Cargaficio cargaficio = AdmCargaficios.retornarCargaficioDisponible();
+                RobotActual.conectarse_estacion(cargaficio); //lo conecta al que esta disponible
+            } else {
+                return false; //si nos e conecta hay mas robots que cargaficios disponibles y retorna false
+            }
+        }
+        return true; //todos se conectaron hay suficientes cargaficios para todos.
+    }
+    
+    public boolean crearListaRobots(int cant){
+        
+        for (int i = (listaRobots.size()+1); i<=(cant+listaRobots.size()+1); i++){
+            String procesador = "IAAA-" + i;
+            
+            //Para crear al robot se le asignan una lista de tareas
+            Random random = new Random();
+            int numero = random.nextInt(6) + 1;
+            
+            
+            Robot nRobot = new Robot(procesador, numero);
+            i++;
+            
+        }
+    return true;
+    }
+    
+    
     
     @Override
     public String toString() { return "lista de Robots:\n" + listaRobots ; }

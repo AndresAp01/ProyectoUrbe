@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import modelo.*;
 import java.util.Map;
 import java.util.HashMap;
-
+import java.util.Optional;
 /**
  *
  * @author linuxman
@@ -29,7 +29,7 @@ public class PerfilGeneral {
         return AdmRobots.TotalRobotsAlerta()*100/AdmRobots.TotalRobots(); //divide los robots totales por los robots en alerta, esto se muestra en el dashboard como kpi
     }
 
-    public Map<Edificio, DatosRobotEdificio> obtenerDatosPorEdificio() {
+    public Map<Edificio, DatosRobotEdificio> obtenerDatosPorEdificio(AdmEdificio AdmEdificio) {
 
         ArrayList<Edificio> listaEdificios = AdmEdificio.getListaEdificios(); //se requiere acceder a la lista de edificios
 
@@ -53,13 +53,13 @@ public class PerfilGeneral {
     
 
     //parte 2
-    public int cantidadCargaficiosDisponibles(){
+    public int cantidadCargaficiosDisponibles(AdmCargaficios AdmCargaficios){
         return AdmCargaficios.CargaficiosDisponibles(); //retorna la cantidad de cargaficios disponibles
     }
 
-    public int porcentajeCargaficiosDisponibles(){
+    public int porcentajeCargaficiosDisponibles(AdmCargaficios AdmCargaficios){
         ArrayList<Cargaficio> Cargaficios = AdmCargaficios.getListaCargaficios(); //se requiere esta funcion en AdmCargaficios
-        return  cantidadCargaficiosDisponibles() * 100 / Cargaficios.size() ;
+        return  AdmCargaficios.CargaficiosDisponibles() * 100 / Cargaficios.size() ;
     }
 
     //Para el desglose que es
@@ -83,7 +83,7 @@ public class PerfilGeneral {
 
     
 
-    public Map<Cargaficio, DatosCargaficioOcupacionEstado> obtenerDatosPorCargaficio() {
+    public Map<Cargaficio, DatosCargaficioOcupacionEstado> obtenerDatosPorCargaficio(AdmCargaficios AdmCargaficios) {
 
         ArrayList<Cargaficio> listaCargaficios = AdmCargaficios.getListaCargaficios(); //se requiere acceder a la lista de Cargaficios
 
@@ -102,7 +102,7 @@ public class PerfilGeneral {
     //Se hacen mapas para relacion 1 a 1 y acceso facil por edificio a esos datos
 
     //parte 3
-    public int edificiosImpactados(){
+    public int edificiosImpactados(AdmEdificio AdmEdificio){
         return AdmEdificio.edificiosImpactados(); //se requiere esta funcion que solo da el numero de edificios donde ha ocurrido 1 o mas problemas de cualquier tipo
     }
     
@@ -117,7 +117,7 @@ public class PerfilGeneral {
 
     //PARTE 4
 
-    public ArrayList ocupacionPorEdificio(){
+    public ArrayList ocupacionPorEdificio(AdmEdificio AdmEdificio){
         ArrayList<Edificio> listaEdificios = AdmEdificio.getListaEdificios(); //se requiere acceder a la lista de edificios
         ArrayList ocupacionEdificio = new ArrayList<>();
         for (Edificio edificio : listaEdificios) {
@@ -127,6 +127,7 @@ public class PerfilGeneral {
         return ocupacionEdificio; //Pues no cambia el orden de edificios
     }
     
+    //Retorna lista con info especifica por edificio
     public ArrayList desgloseEdificios(Edificio unEdificio){
         ArrayList info = new ArrayList<>();
         String id = unEdificio.getId();
@@ -151,36 +152,53 @@ public class PerfilGeneral {
     }
     
     
-    /*
-    Para este desgose un string no?
-    Tabla “Edificios” (para el tablero):
-    | Edificio | Capacidad | Residentes | Ocupación % | Ciudadanos con robot |
-    Ciudadanos sin robot | Robots asignados | Robots/ciudadano | Robots en alerta|
+    
 
-    FUnciones a agregar:
-    A edificio:
-    Solo se debe agregar Ciudadanos con robot y Ciudadanos sin robot, ya existen funciones que cubren el resto de cosas:
-    public int CiudadanosConRobot(){
-        int ciudadanosConRobot = 0;
-        if (!habitantes.isEmpty()){
-            for (Ciudadano CiudadanoActual: habitantes){
-                CiudadanosConRobot += 1;
-            }
-        }
-        return CiudadanosConRobot;
+    
+    
+    //Para los top-3 
+    //Mayor Ocupacion
+    //Mayor Cidadanos SIn robot
+    //Mayor Robots Alerta
+    //Se devolvera los 3 primeros en ArrayList
+    public ArrayList<Edificio> ConseguirTop3MayorOcupacion(AdmEdificio AdmEdificio){
+        return AdmEdificio.obtenerTop3EdificiosOcupacion();
     }
-
-    Para los de sin robot, solo se le resta la cantidad de CiudadanosConRobot al atributo espaciosOcupados
-    */
-
     
+    public ArrayList<Edificio> ConseguirTop3MayorCiudadanosSinRobot(AdmEdificio AdmEdificio){
+        return AdmEdificio.obtenerTop3EdificiosCiudadanosSinRobot();
+    }
     
-    //Para los top-N ocupo discutirlo con ustedes, se vera en el mensaje de whats.
-
+    public ArrayList<Edificio> ConseguirTop3MayorRobotsAlerta(AdmEdificio AdmEdificio){
+        return AdmEdificio.obtenerTop3EdificiosRobotAlerta();
+    }
+    
     //Barras por edificio (ocupación %).Ya fue conseguida por la funcion pasada
 
-    //Alerta
-    //SObreAsignacion
+    //Alerta, puede hacerse en el GUI no es configurable
+    //SobreAsignacion
+    //Se consigue la media de ciuddanos en todos los edificios, y la media de robots en todos los edificios
+    //Se regresa el edificio con mas robots y el edificio con mas ciudadanos
+    //[media robots, media ciudadanos, edificio con mas robots, edificio con mas ciudadanos]
+    //si no existen los edificios por a o b sera un string que diga No Hay
+    
+    public ArrayList InfoSobreAsignacion(AdmEdificio AdmEdificio){
+        ArrayList info = new ArrayList<>();
+        int mediaR = AdmEdificio.mediaRobots();
+        int mediaC = AdmEdificio.mediaCiudadanos();
+        Optional<Edificio> edificioR = AdmEdificio.obtenerEdificioConMasRobots();
+        Optional<Edificio> edificioC = AdmEdificio.obtenerEdificioConMasCiudadanos();
+        info.add(mediaR);
+        info.add(mediaC);
+        if (edificioR.isPresent() && edificioC.isPresent()){
+            info.add(edificioR.get());
+            info.add(edificioC.get());
+        } else {
+            info.add("No existe");
+            info.add("No existe");
+        }
+        return info;
+    }
 
 
 }

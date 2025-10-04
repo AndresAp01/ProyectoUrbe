@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 
 /**
@@ -104,7 +105,65 @@ public class AdmEdificio {
         }
         return problemas;
     }
-  
+    
+    public ArrayList<Edificio> obtenerTop3EdificiosOcupacion() {
+        return listaEdificios.stream()
+                .sorted(Comparator.comparingInt(Edificio::porcentajeOcupacion).reversed())
+                .limit(3)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+    
+    public ArrayList<Edificio> obtenerTop3EdificiosCiudadanosSinRobot() {
+        return listaEdificios.stream()
+                .sorted(Comparator.comparingInt(Edificio::porcentajeCiudadanosSinRobot).reversed())
+                .limit(3)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+    
+    public ArrayList<Edificio> obtenerTop3EdificiosRobotAlerta() {
+        return listaEdificios.stream()
+                .sorted(Comparator.comparingInt(Edificio::robots_en_alerta).reversed())
+                .limit(3)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+    
+    public int mediaRobots(){
+        int mediaR = 0;
+        for (Edificio EdificioActual: listaEdificios){
+            mediaR += EdificioActual.getN_robots_total();
+        }
+        mediaR = mediaR / listaEdificios.size();
+        return mediaR;
+    }
+    
+    public int mediaCiudadanos(){
+        int mediaC = 0;
+        for (Edificio EdificioActual: listaEdificios){
+            mediaC += EdificioActual.getEspacios_ocupados();
+        }
+        mediaC = mediaC / listaEdificios.size();
+        return mediaC;
+    }
+
+    public Optional<Edificio> obtenerEdificioConMasRobots() {
+    return listaEdificios.stream()
+            .max(Comparator.comparingInt(Edificio::robots_totales));
+    }
+    
+    public Optional<Edificio> obtenerEdificioConMasCiudadanos() {
+    return listaEdificios.stream()
+            .max(Comparator.comparingInt(Edificio::getEspacios_ocupados));
+    }
+    
+    public Edificio retornarEdificioDisponible(){
+        for (Edificio EdificioActual: listaEdificios){
+            if (!EdificioActual.isSi_esta_lleno()){
+                return EdificioActual;
+            }
+        }
+        return null;
+    }
+
 
 
 
@@ -112,7 +171,7 @@ public class AdmEdificio {
 
     @Override
     public String toString() {
-        return "lista de Edificios:\n" + listaEdificios+"\n" ;
+        return "lista de Edificios:\n" + listaEdificios+"\n";
     }
 }
 

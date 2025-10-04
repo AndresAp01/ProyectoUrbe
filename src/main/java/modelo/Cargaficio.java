@@ -161,6 +161,8 @@ public class Cargaficio {
 
             // Cargar batería
             robotActual.setBateria(100);
+            robotActual.setEncendido(true);
+            robotActual.setConectado(false);
 
             // Remover robot de la lista original
             robotsConectados.remove(robotActual);
@@ -188,6 +190,8 @@ public class Cargaficio {
             
             // Cargar batería
             dronActual.setBateria(100);
+            dronActual.setActivo(true);
+            
 
             // Remover robot de la lista original
             dronesConectados.remove(dronActual);

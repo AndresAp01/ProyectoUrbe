@@ -33,7 +33,6 @@ public class Robot {
     private int bateria;
     private boolean encendido;
     private boolean conectado;
-    private Cargaficio unCargaficio;
     private boolean owned;
     private Ciudadano unCiudadano;
     private boolean si_esta_en_alerta;
@@ -45,7 +44,6 @@ public class Robot {
         this.bateria = 100;
         this.encendido = true;
         this.conectado = false;
-        this.unCargaficio = null;
         this.owned = false;
         this.unCiudadano = null;
         this.si_esta_en_alerta = false;
@@ -96,13 +94,6 @@ public class Robot {
         this.conectado = conectado;
     }
 
-    public Cargaficio getUnCargaficio() {
-        return unCargaficio;
-    }
-
-    public void setUnCargaficio(Cargaficio unCargaficio) {
-        this.unCargaficio = unCargaficio;
-    }
 
     public boolean isOwned() {
         return owned;
@@ -138,11 +129,12 @@ public class Robot {
 
     
     // funciones
-    public boolean conectarse_estacion(){
+    public boolean conectarse_estacion(Cargaficio unCargaficio){
         if (unCargaficio.getEstaLleno()){
             return false;
         }
         unCargaficio.agregar_robot(this);
+        this.setConectado(true);
         return true;
     }
     
@@ -155,7 +147,7 @@ public class Robot {
                 ", bateria=" + bateria +
                 ", encendido=" + encendido +
                 ", conectado=" + conectado +
-                ", unCargaficio=" + unCargaficio +
+                
                 ", owned=" + owned +
                 ", unCiudadano=" + unCiudadano +
                 ", si_esta_en_alerta=" + si_esta_en_alerta +

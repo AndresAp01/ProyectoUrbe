@@ -101,13 +101,22 @@ public class AdmCargaficios {
         return cargaficios;
     }
     
-    public void cargarDispositivosConectados(){
+    public boolean cargarDispositivosConectados(){
         for (Cargaficio CargaficioActual: listaCargaficios){
             CargaficioActual.cargar_drones();
             CargaficioActual.cargar_robots();
         }
+        return true;
     }
     
+    public Cargaficio retornarCargaficioDisponible(){
+        for (Cargaficio CargaficioActual: listaCargaficios){
+            if (!CargaficioActual.getEstaLleno()){
+                return CargaficioActual;
+            }
+        }
+        return null;
+    }
     @Override
     public String toString() {
         return "lista de Cargaficios:\n" + listaCargaficios;

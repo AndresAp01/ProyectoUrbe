@@ -6,6 +6,7 @@ package logica;
 import java.util.ArrayList;
 import modelo.Ciudadano;
 import java.util.Random;
+import modelo.Edificio;
 /**
  *
  * @author linuxman
@@ -79,6 +80,19 @@ public class AdmCiudadanos {
                 CiudadanoActual.pedir_tarea();
             }
         }
+    }
+    
+    public boolean crearListaCiudadanos(AdmEdificio AdmEdificio, int cant){
+        for (int i = (listaCiudadanos.size()+1); i<=(cant+listaCiudadanos.size()+1); i++){
+            Edificio EdificioDisponible = AdmEdificio.retornarEdificioDisponible();
+            if (EdificioDisponible == null){ //si noe xiste ningun edificio disponible
+                return false; //retorna falso y no crea los ciudadanos o no crea a todos los ciudadanos
+            } 
+            String id = "CEH-"+i;
+            Ciudadano nCiudadano = new Ciudadano(id, EdificioDisponible);
+            EdificioDisponible.agregarCiudadano(nCiudadano); //crea ciudadano y lo agrega al edificio
+        }
+        return true; //todo salio bien
     }
     @Override
     public String toString() {

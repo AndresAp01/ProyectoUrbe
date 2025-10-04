@@ -21,7 +21,8 @@ public class AdmDron {
     public boolean crearListaDrones(int cantEdificios){
         int i =0;
         Random rand = new Random();
-        while (i<rand.nextInt(cantEdificios*2)){
+        int tope = rand.nextInt(3,(cantEdificios*2)-1);
+        while (i<tope){
             int horasVuelo = rand.nextInt(4)+1;
             int bateria = 25*horasVuelo;
             boolean estadoAlerta = false;
@@ -31,6 +32,7 @@ public class AdmDron {
                 activo=false;
             }
             Dron nuevoDron = new Dron("NVIDIAJetson"+(i+1), horasVuelo, bateria, estadoAlerta, activo,false);
+            listaDrones.add(nuevoDron);
             i++;
         }
     return true;
@@ -75,14 +77,43 @@ public class AdmDron {
         return null;
     }
 
-    public boolean enviarDronesAPatrullar(int valorMinimoBateria, ArrayList<Anomalia> listaAnomalias, ArrayList<Registro> listaRegistros){
-        for (Dron unDron : listaDrones){
-            if ((unDron.getBateria()-25)<=valorMinimoBateria){
-                unDron.enviarDronARecargar();
+    public Dron buscarDronApto(ArrayList<Dron> listaMomentanea){
+        Random rand = new Random();
+        Dron unDron = listaDrones.get(rand.nextInt(1,listaDrones.size()));
+        for (Dron otroDron : listaMomentanea) {
+            if (unDron.equals(otroDron)) {
+                return null;
             }
-            else{
+        }
+        return  unDron;
+    }
+
+    public ArrayList<Dron> crearListaMomentanea(){
+        Random rand = new Random();
+        int limite = rand.nextInt(1,listaDrones.size());
+        ArrayList<Dron> listaMomentanea = new ArrayList<>();
+        while(listaMomentanea.size()<limite){
+            Dron elDron = buscarDronApto(listaMomentanea);
+
+            while (elDron==null){
+                elDron= buscarDronApto(listaMomentanea);
+            }
+            System.out.println(elDron.toString());
+            listaMomentanea.add(elDron);
+        }
+        return listaMomentanea;
+    }
+
+    public boolean enviarDronesAPatrullar(int valorMinimoBateria){
+        ArrayList <Dron> listaDeDronesRandom=crearListaMomentanea();
+        System.out.println(listaDeDronesRandom.toString());
+        for (Dron unDron : listaDeDronesRandom) {
+            if ((unDron.getBateria() - 25) <= valorMinimoBateria) {
+                unDron.enviarDronARecargar();
+            } else {
                 unDron.setEnPatrulla(true);
-                unDron.setBateria(unDron.getBateria()-25);
+                unDron.setBateria(unDron.getBateria() - 25);
+                unDron.setHorasVueloRestantes(unDron.getHorasVueloRestantes()-1);
             }
         }
         return true;

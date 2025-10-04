@@ -13,6 +13,7 @@ public class PerfilAdmin {
     private AdmCiudadanos  admCiudadanos;
     private AdmAnomalias admAnomalias;
     private AdmReglas admReglas;
+    private PerfilOperador perfilOperador;
 
     PerfilAdmin(){
         this.admEdificio = new AdmEdificio();
@@ -22,7 +23,35 @@ public class PerfilAdmin {
         this.admCiudadanos = new AdmCiudadanos();
         this.admAnomalias = new AdmAnomalias();
         this.admReglas = new AdmReglas();
+        this.perfilOperador = new PerfilOperador();
     }
+
+    public AdmEdificio getAdmEdificio() {
+        return admEdificio;
+    }
+    public AdmCargaficios getAdmCargaficios() {
+        return admCargaficios;
+    }
+    public AdmDron getAdmDron() {
+        return admDron;
+    }
+    public AdmRobots getAdmRobots() {
+        return admRobots;
+    }
+    public AdmCiudadanos getAdmCiudadanos() {
+        return admCiudadanos;
+    }
+    public AdmAnomalias getAdmAnomalias() {
+        return admAnomalias;
+    }
+    public AdmReglas getAdmReglas() {
+        return admReglas;
+    }
+    public  PerfilOperador getPerfilOperador() {
+        return perfilOperador;
+    }
+
+    //--------------------------------------- PARTE EXLUSIVAMENTE DE ADMINISTRADOR ---------------------------------------
 
     //la variable opcion sera 0 si decide que quiere generar una cantidad random,
     // cualquier numero entre 3 y 10 indica la cantidad especifica de edificios a crear
@@ -93,5 +122,20 @@ public class PerfilAdmin {
     public String mostrarCargaficios(){
         return admCargaficios.toString();
     }
+
+    //--------------------------------------- PARTE DE OPERADOR  ---------------------------------------
+
+    public boolean crearDronesMedianteOperador(){
+        return perfilOperador.crearDrones(getAdmEdificio(),getAdmDron());
+    }
+
+    public boolean simulateMedianteOperador(){
+        return perfilOperador.simulate(getAdmCiudadanos(),getAdmRobots(),getAdmReglas(),getAdmDron(),getAdmCargaficios());
+    }
+
+    public boolean mostrarDronesMedianteOperador(){
+        return perfilOperador.mostrarDrones(getAdmDron());
+    }
+
 
 }

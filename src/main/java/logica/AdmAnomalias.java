@@ -10,6 +10,10 @@ public class AdmAnomalias {
 
     public AdmAnomalias(){ this.listaAnomalias = new ArrayList<>(); }
 
+    public ArrayList<Anomalia> getListaAnomalias() {
+        return listaAnomalias;
+    }
+
     public boolean crearListaAnomalias(int[] listaIndex) {
         TipoAnomalia[] tipoAnomalia = TipoAnomalia.values();
         for (int index : listaIndex) {

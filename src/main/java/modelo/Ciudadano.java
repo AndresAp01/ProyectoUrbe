@@ -99,7 +99,7 @@ public class Ciudadano {
             List<Tarea> tareasDisponibles = new ArrayList<>(List.of(Tarea.values()));
             int indice_tarea = rand.nextInt(6);
             Tarea tarea_a_realizar = tareasDisponibles.get(indice_tarea);
-            if (aleatorio.getPosibles_tareas().contains(tarea_a_realizar)){
+            if (aleatorio.getPosibles_tareas().contains(tarea_a_realizar) && aleatorio.isEncendido()){
                 //realiza las tareas dependiendo de que posea dentro
                 if (tarea_a_realizar == Tarea.MEDICO){
                     if ((aleatorio.getBateria() - 5) < 0){
@@ -172,6 +172,9 @@ public class Ciudadano {
                     aleatorio.setBateria(aleatorio.getBateria() - 25);
                     return true;
                 }
+            }
+            if (aleatorio.getBateria() < 0){
+                aleatorio.setEncendido(false); //se apaga y luego admRobots revisa si se debe conectar a alguna estacion disponible
             }
            return false; //el robot no contiene la tarea a realizar 
         }
