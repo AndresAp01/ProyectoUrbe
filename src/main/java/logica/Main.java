@@ -1,6 +1,6 @@
 package logica;
 //MANTENER ENTRADAS DE UN SOLO VALOR EN LOS ADMINISTRADORES ESPECIFICADO LO MEJOR POSIBLE
-
+//holas
 
 import modelo.TipoAnomalia;
 
