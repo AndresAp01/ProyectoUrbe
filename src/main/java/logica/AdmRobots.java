@@ -1,52 +1,72 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package logica;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
+import java.util.Random;
 import modelo.Robot;
 import modelo.Cargaficio;
 import modelo.Regla;
-import java.util.Random;
 
 /**
- *
- * @author linuxman
- * Solo para guardar la lista de los robots
+ * Clase que administra la lista de robots del sistema.
+ * Permite agregar, consultar, modificar, eliminar y generar robots,
+ * así como conectarlos a estaciones de carga disponibles.
+ * También proporciona funciones de estadísticas sobre los robots.
  */
-
-
 public class AdmRobots {
+
+    /** Lista de robots gestionados por el sistema. */
     private ArrayList<Robot> listaRobots;
+
+    /** Contador de robots totales en la lista. */
     private int total_robots;
+
+    /** Contador de robots que se encuentran en estado de alerta. */
     private int total_robots_alerta;
-    
-    public AdmRobots(){
+
+    /**
+     * Constructor que inicializa la lista de robots.
+     */
+    public AdmRobots() {
         this.listaRobots = new ArrayList<Robot>();
     }
-    
-    public boolean agregar(Robot unRobot){
-        for (Robot RobotActual: listaRobots)
+
+    // -------------------- CRUD --------------------
+
+    /**
+     * Agrega un robot a la lista si no existe previamente.
+     * @param unRobot Robot a agregar.
+     * @return true si se agrega, false si ya existía.
+     */
+    public boolean agregar(Robot unRobot) {
+        for (Robot RobotActual : listaRobots)
             if (RobotActual.equals(unRobot))
                 return false;
         listaRobots.add(unRobot);
         return true;
     }
 
-    public Robot consultar(String elProcesador){
-        for (int i = 0; i<listaRobots.size(); i++){
+    /**
+     * Busca un robot por su procesador.
+     * @param elProcesador Identificador del procesador.
+     * @return El robot correspondiente o null si no se encuentra.
+     */
+    public Robot consultar(String elProcesador) {
+        for (int i = 0; i < listaRobots.size(); i++) {
             Robot Robot = listaRobots.get(i);
             if (elProcesador.equals(Robot.getProcesador()))
                 return Robot;
-        } // for
-        return null;   // no encontró el Robot
-
+        }
+        return null;
     }
 
-    public boolean modificar(Robot nuevoRobot){
-        for (int i = 0; i < listaRobots.size(); i++){
-            if (listaRobots.get(i).equals(nuevoRobot)){
+    /**
+     * Modifica un robot existente reemplazándolo por uno nuevo.
+     * @param nuevoRobot Robot con los datos actualizados.
+     * @return true si se modificó, false si no se encontró.
+     */
+    public boolean modificar(Robot nuevoRobot) {
+        for (int i = 0; i < listaRobots.size(); i++) {
+            if (listaRobots.get(i).equals(nuevoRobot)) {
                 listaRobots.set(i, nuevoRobot);
                 return true;
             }
@@ -54,69 +74,91 @@ public class AdmRobots {
         return false;
     }
 
-    public boolean eliminar(String elProcesador){
-        for (int i = 0; i < listaRobots.size(); i++){
-            if (elProcesador.equals(listaRobots.get(i).getProcesador())){
+    /**
+     * Elimina un robot de la lista según su procesador.
+     * @param elProcesador Identificador del procesador.
+     * @return true si se eliminó, false si no se encontró.
+     */
+    public boolean eliminar(String elProcesador) {
+        for (int i = 0; i < listaRobots.size(); i++) {
+            if (elProcesador.equals(listaRobots.get(i).getProcesador())) {
                 listaRobots.remove(i);
                 return true;
             }
         }
         return false;
     }
-    
-    // funciones
-    
-    public int TotalRobots(){
-        for (Robot RobotActual: listaRobots)
+
+    // -------------------- Funciones adicionales --------------------
+
+    /**
+     * Retorna la cantidad total de robots.
+     * @return Número total de robots.
+     */
+    public int TotalRobots() {
+        for (Robot RobotActual : listaRobots)
             total_robots += 1;
         return total_robots;
     }
-    
-    public int TotalRobotsAlerta(){
-        for (Robot RobotActual: listaRobots)
-            if (RobotActual.isSi_esta_en_alerta()){
+
+    /**
+     * Retorna la cantidad de robots en estado de alerta.
+     * @return Número de robots en alerta.
+     */
+    public int TotalRobotsAlerta() {
+        for (Robot RobotActual : listaRobots)
+            if (RobotActual.isSi_esta_en_alerta()) {
                 total_robots_alerta += 1;
             }
         return total_robots_alerta;
     }
-    
-    public boolean conectarRobots(AdmCargaficios AdmCargaficios){
-        for (Robot RobotActual: listaRobots){
-            if (!RobotActual.isEncendido() && !RobotActual.isConectado()){
+
+    /**
+     * Conecta los robots apagados a cargaficios disponibles.
+     * @param AdmCargaficios Administrador de cargaficios.
+     * @return true si todos los robots se conectan, false si no hay cargaficios suficientes.
+     */
+    public boolean conectarRobots(AdmCargaficios AdmCargaficios) {
+        for (Robot RobotActual : listaRobots) {
+            if (!RobotActual.isEncendido() && !RobotActual.isConectado()) {
                 Cargaficio cargaficio = AdmCargaficios.retornarCargaficioDisponible();
-                RobotActual.conectarse_estacion(cargaficio); //lo conecta al que esta disponible
+                RobotActual.conectarse_estacion(cargaficio);
             } else {
-                return false; //si nos e conecta hay mas robots que cargaficios disponibles y retorna false
+                return false;
             }
         }
-        return true; //todos se conectaron hay suficientes cargaficios para todos.
+        return true;
     }
-    
-    public boolean crearListaRobots(int cant, Regla regla){
-        
-        for (int i = (listaRobots.size()+1); i<=(cant+listaRobots.size()+1); i++){
+
+    /**
+     * Crea una lista de robots nuevos con tareas aleatorias y nivel de batería.
+     * @param cant Cantidad de robots a crear.
+     * @param regla Regla que puede modificar el valor mínimo de batería.
+     * @return true si se ejecuta la creación.
+     */
+    public boolean crearListaRobots(int cant, Regla regla) {
+        for (int i = (listaRobots.size() + 1); i <= (cant + listaRobots.size() + 1); i++) {
             String procesador = "IAAA-" + i;
-            
-            //Para crear al robot se le asignan una lista de tareas
+
             Random random = new Random();
             int numero = random.nextInt(6) + 1;
-            
-            if (regla.getActiva()){
+
+            if (regla.getActiva()) {
                 Robot nRobot = new Robot(procesador, numero, regla.getValorMinimoBateria());
-            i++;
+                i++;
             } else {
                 Robot nRobot = new Robot(procesador, numero, 5);
             }
-            
-            
         }
-    return true;
+        return true;
     }
-    
-    
-    
+
+    /**
+     * Representación en String de la lista de robots.
+     * @return String con todos los robots.
+     */
     @Override
-    public String toString() { return "lista de Robots:\n" + listaRobots ; }
+    public String toString() {
+        return "lista de Robots:\n" + listaRobots;
+    }
 }
-
-
