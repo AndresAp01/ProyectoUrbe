@@ -1,9 +1,9 @@
 package logica;
 
-import modelo.Cargaficio;
-import modelo.TipoAnomalia;
+import modelo.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class PerfilAdmin {
     private AdmEdificio admEdificio;
@@ -13,7 +13,9 @@ public class PerfilAdmin {
     private AdmCiudadanos  admCiudadanos;
     private AdmAnomalias admAnomalias;
     private AdmReglas admReglas;
+    private CInteligencia  cInteligencia;
     private PerfilOperador perfilOperador;
+    private PerfilGeneral perfilGeneral;
 
     PerfilAdmin(){
         this.admEdificio = new AdmEdificio();
@@ -23,7 +25,9 @@ public class PerfilAdmin {
         this.admCiudadanos = new AdmCiudadanos();
         this.admAnomalias = new AdmAnomalias();
         this.admReglas = new AdmReglas();
+        this.cInteligencia = new CInteligencia();
         this.perfilOperador = new PerfilOperador();
+        this.perfilGeneral = new PerfilGeneral();
     }
 
     public AdmEdificio getAdmEdificio() {
@@ -49,6 +53,9 @@ public class PerfilAdmin {
     }
     public  PerfilOperador getPerfilOperador() {
         return perfilOperador;
+    }
+    public CInteligencia getCInteligencia() {
+        return cInteligencia;
     }
 
     //--------------------------------------- PARTE EXLUSIVAMENTE DE ADMINISTRADOR ---------------------------------------
@@ -82,8 +89,7 @@ public class PerfilAdmin {
         return admCargaficios.retornarListaCargaficios();
     }
 
-    public boolean crearAnomalias(/*int[] index*/){
-        int[] index = {1,2,3};
+    public boolean crearAnomalias(int[] index){
         return admAnomalias.crearListaAnomalias(index);
     }
 
@@ -130,12 +136,29 @@ public class PerfilAdmin {
     }
 
     public boolean simulateMedianteOperador(){
-        return perfilOperador.simulate(getAdmCiudadanos(),getAdmRobots(),getAdmReglas(),getAdmDron(),getAdmCargaficios());
+        return perfilOperador.simulate(getAdmCiudadanos(),getAdmRobots(),getAdmReglas(),getAdmDron(),getAdmCargaficios(), getAdmAnomalias(), getCInteligencia());
     }
 
     public boolean mostrarDronesMedianteOperador(){
         return perfilOperador.mostrarDrones(getAdmDron());
     }
 
+    //--------------------------------------- PARTE DE GENERAL  ---------------------------------------
+
+    public int porcentajeRobotsAlertaMedianteGeneral() { return perfilGeneral.conseguirPorcentajeRobotsAlerta(getAdmRobots()); }
+
+    public Map<Edificio, DatosRobotEdificio> obtenerDatosPorEdificioMedianteGeneral() { return perfilGeneral.obtenerDatosPorEdificio(getAdmEdificio()); }
+
+    public int cantCargaficiosDisponiblesMedianteGeneral() { return perfilGeneral.cantidadCargaficiosDisponibles(getAdmCargaficios()); }
+
+    public int edificiosImpactadosMedianteGeneral() { return perfilGeneral.edificiosImpactados(getAdmEdificio(),getAdmAnomalias()); }
+
+    public ArrayList<ArrayList<Integer>> porTipoAnomaliaYEdificioMedianteGeneral () { return perfilGeneral.porTipoAnomaliaYEdificio(getAdmEdificio(), getAdmAnomalias()); }
+
+    public ArrayList<ArrayList> porAccionEjecutadaMedianteGeneral() { return perfilGeneral.porAccionEjecutada(getCInteligencia(), getAdmAnomalias()); }
+
+    public ArrayList<ArrayList> tablaEdificiosIncidentesMedianteGeneral() { return perfilGeneral.tablaEdificiosIncidentes(getAdmEdificio(), getAdmAnomalias(), getCInteligencia()); }
+
+    public ArrayList<String> mayorReincidenciaMedianteGeneral() { return perfilGeneral.mayorReincidencia(getAdmEdificio(), getAdmAnomalias()); }
 
 }
