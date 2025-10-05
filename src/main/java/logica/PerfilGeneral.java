@@ -1,4 +1,5 @@
 package logica;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import modelo.*;
 import java.util.Map;
@@ -9,24 +10,10 @@ import java.util.Optional;
  * @author linuxman
  */
 public class PerfilGeneral {
-    private AdmEdificio AdmEdificio;
-    private AdmDron AdmDron;
-    private AdmRobots AdmRobots;
-    private AdmCiudadanos AdmCiudadanos;
-    private AdmCargaficios AdmCargaficios;
-    private AdmReglas AdmReglas;
 
-    public PerfilGeneral(){
-        this.AdmEdificio = new AdmEdificio();
-        this.AdmDron = new AdmDron();
-        this.AdmCiudadanos = new AdmCiudadanos();
-        this.AdmRobots = new AdmRobots();
-        this.AdmCargaficios = new AdmCargaficios();
-        this.AdmReglas = new AdmReglas();
-    }
     //parte 1
-    public int conseguirPorcentajeRobotsAlerta(){
-        return AdmRobots.TotalRobotsAlerta()*100/AdmRobots.TotalRobots(); //divide los robots totales por los robots en alerta, esto se muestra en el dashboard como kpi
+    public int conseguirPorcentajeRobotsAlerta(AdmRobots admRobots){
+        return admRobots.TotalRobotsAlerta()*100/admRobots.TotalRobots(); //divide los robots totales por los robots en alerta, esto se muestra en el dashboard como kpi
     }
 
     public Map<Edificio, DatosRobotEdificio> obtenerDatosPorEdificio(AdmEdificio AdmEdificio) {
@@ -101,19 +88,189 @@ public class PerfilGeneral {
     }
     //Se hacen mapas para relacion 1 a 1 y acceso facil por edificio a esos datos
 
-    //parte 3
-    public int edificiosImpactados(AdmEdificio AdmEdificio){
-        return AdmEdificio.edificiosImpactados(); //se requiere esta funcion que solo da el numero de edificios donde ha ocurrido 1 o mas problemas de cualquier tipo
+
+
+
+    //PARTE 3
+
+    //*************************** KPI ***************************
+    public int edificiosImpactados(AdmEdificio admEdificio, AdmAnomalias admAnomalias) {
+        ArrayList<Edificio> listaEdificios = admEdificio.getListaEdificios();
+        ArrayList<Anomalia> listaAnomalias = admAnomalias.getListaAnomalias();
+        int cuenta = 0;
+        for (Edificio edificio : listaEdificios) {
+            for(Anomalia anomalia : listaAnomalias) {
+                if(anomalia.getAvenida() == edificio.getAvenida() || anomalia.getCalle() == edificio.getCalle()) {
+                    cuenta++;
+                }
+            }
+        }
+        return cuenta;
     }
-    
-    //SARAAAAAA
-    //Para los desgloses de esta parte requiero saber como funcionan los problemas y su contabilidad
 
-    //Para los graficos
-    //Tabla de edificios con incidentes, acciones ejecutadas y hora.
-    //Strings puesto de manera en tabla no? Aunque requiero saber como funcan los problemas
+    //*************************** DESGLOCES ***************************
+    //Desgloce 1
 
-    //Alertas: Edificio con mayor reincidencia.
+    public boolean anomaliaExiste(TipoAnomalia tipoAnomalia, ArrayList<Anomalia> anomalias) {
+        for (Anomalia anomalia: anomalias) {
+            if(anomalia.getTipoAnomalia() == tipoAnomalia) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int cuentaTotal(TipoAnomalia anomaliaActual, ArrayList<Anomalia> anomalias, Edificio edificioActual) {
+        int cuenta=0;
+        for(Anomalia anomalia : anomalias) {
+            if (anomalia.getTipoAnomalia()==anomaliaActual && edificioActual.getCalle()==anomalia.getCalle() || edificioActual.getAvenida()==anomalia.getAvenida()) {
+                cuenta++;
+            }
+        }
+        return cuenta;
+    }
+
+    public ArrayList<ArrayList<Integer>> porTipoAnomaliaYEdificio(AdmEdificio admEdificio, AdmAnomalias admAnomalias) {
+        ArrayList<ArrayList<Integer>> matriz =  new ArrayList();
+        Integer cuenta = 0;
+        TipoAnomalia[] tipoAnomalia = TipoAnomalia.values();
+        ArrayList<Edificio> listaEdificios = admEdificio.getListaEdificios();
+        ArrayList<Anomalia> listaAnomalias = admAnomalias.getListaAnomalias();
+        for(Edificio edificio : listaEdificios) {
+            ArrayList<Integer> listas =  new ArrayList();
+            for (TipoAnomalia tAnomalia : tipoAnomalia) {
+                boolean existe=anomaliaExiste(tAnomalia, listaAnomalias);
+                if (existe){
+                    cuenta = cuentaTotal(tAnomalia, listaAnomalias, edificio);
+                    listas.add(cuenta);
+
+                }
+            }
+            matriz.add(listas);
+        }
+        //la cantidad de elementos de la matriz depende de la cantidad de edificios.
+        return matriz;
+    }
+
+    //Desgloce 2
+
+    public int cuentaTotal(String accion, ArrayList<Registro> listaRegistros) {
+        int cuenta=0;
+        for (Registro registro : listaRegistros) {
+            if (accion.equals(registro.getAccionTomada())){
+                cuenta++;
+            }
+        }
+        return cuenta;
+    }
+
+    public ArrayList<String> listaAcciones(ArrayList<Anomalia> listaAnomalias){
+        ArrayList acciones = new ArrayList();
+        for (Anomalia anomalia : listaAnomalias) {
+            ArrayList<String> listaAcciones = anomalia.getListaAcciones();
+            for (String accion : listaAcciones) {
+                if (!(acciones.contains(accion))) {
+                    acciones.add(accion);
+                }
+            }
+        }
+        return  acciones;
+    }
+
+    public ArrayList<ArrayList> porAccionEjecutada(CInteligencia cInteligencia, AdmAnomalias admAnomalias) {
+        ArrayList<Anomalia> listaAnomalias = admAnomalias.getListaAnomalias();
+        ArrayList<Registro> listaRegistros = cInteligencia.getListaRegistros();
+        ArrayList<String> listaAcciones = listaAcciones(listaAnomalias);
+        ArrayList matriz =  new ArrayList();
+        for(String accion : listaAcciones) {
+            ArrayList listas =  new ArrayList();
+            listas.add(accion);
+            listas.add(cuentaTotal(accion, listaRegistros));
+            matriz.add(listas);
+        }
+        return matriz;
+    }
+
+    //*************************** GRAFICO ***************************
+
+    public ArrayList accionYHora(ArrayList<Registro> listaRegistros, TipoAnomalia tAnomalia){
+        ArrayList datos= new ArrayList();
+        for (Registro registro : listaRegistros) {
+            if (registro.getTipoAnomalia()==tAnomalia){
+                datos.add(registro.getAccionTomada());
+                datos.add(registro.getHora());
+                return datos;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<ArrayList> tablaEdificiosIncidentes(AdmEdificio admEdificio, AdmAnomalias admAnomalias, CInteligencia cInteligencia) {
+        ArrayList<Edificio> listaEdificios = admEdificio.getListaEdificios();
+        ArrayList<Anomalia> listaAnomalias = admAnomalias.getListaAnomalias();
+        ArrayList<Registro> listaRegistros = cInteligencia.getListaRegistros();
+        ArrayList matriz =  new ArrayList();
+        int cuenta = 0;
+        TipoAnomalia[] tipoAnomalia = TipoAnomalia.values();
+        for(Edificio edificio : listaEdificios) {
+            ArrayList listas =  new ArrayList();
+            for (TipoAnomalia tAnomalia : tipoAnomalia) {
+                for (Anomalia anomalia: listaAnomalias) {
+                    if(anomalia.getTipoAnomalia() == tAnomalia && edificio.getCalle().equals(anomalia.getCalle()) || edificio.getAvenida().equals(anomalia.getAvenida())) {
+                        ArrayList accionYHora=accionYHora(listaRegistros,tAnomalia);
+                        if (accionYHora!=null && !listas.contains(edificio.getNombre())) {
+                            listas.add(edificio.getNombre());
+                            listas.add(edificio.getId());
+                            listas.add(tAnomalia);
+                            listas.add(accionYHora.get(0));
+                            listas.add(accionYHora.get(1));}}}}
+            if(listas.size()>0){
+                matriz.add(listas);
+            }
+        }
+        return matriz;
+    }
+
+    //*************************** ALERTA ***************************
+
+    public ArrayList<String> mayorReincidencia(AdmEdificio admEdificio, AdmAnomalias admAnomalias){
+        ArrayList<ArrayList<Integer>> matriz = porTipoAnomaliaYEdificio(admEdificio,  admAnomalias);
+        ArrayList<Edificio> listaEdificios = admEdificio.getListaEdificios();
+        ArrayList<String> resultado = new ArrayList<>();
+        int mayor = 0;
+        int indice = 0;
+        for (int i = 0; i < matriz.size(); i++) {
+            int cuenta = 0;
+            for (int j = 0; j < matriz.get(i).size(); j++) {
+                cuenta += matriz.get(i).get(j);
+            }
+            if (cuenta > mayor) {
+                mayor = cuenta;
+                indice = i;
+            }
+        }
+        resultado.add(listaEdificios.get(indice).getNombre());
+        resultado.add(listaEdificios.get(indice).getId());
+        return resultado;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //PARTE 4
 
@@ -199,6 +356,8 @@ public class PerfilGeneral {
         }
         return info;
     }
+
+
 
 
 }
