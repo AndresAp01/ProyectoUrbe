@@ -8,12 +8,20 @@ public class Registro {
     private LocalTime hora;
     private TipoAnomalia tipoAnomalia;
     private Dron dronDetectoAnomalia;
+    private String accionTomada;
 
-    public Registro(LocalDate fecha, LocalTime hora, TipoAnomalia tipoAnomalia, Dron  dronDetectoAnomalia) {
+    public Registro(LocalDate fecha, LocalTime hora, TipoAnomalia tipoAnomalia, Dron  dronDetectoAnomalia, String accionTomada) {
         this.fecha = fecha;
         this.hora = hora;
         this.tipoAnomalia = tipoAnomalia;
         this.dronDetectoAnomalia = dronDetectoAnomalia;
+        this.accionTomada = accionTomada;
+    }
+
+    public Registro(LocalDate fecha, LocalTime hora,  TipoAnomalia tipoAnomalia) {
+        this.fecha = fecha;
+        this.hora = hora;
+        this.tipoAnomalia = tipoAnomalia;
     }
 
     public LocalDate getFecha() {
@@ -38,4 +46,26 @@ public class Registro {
         return dronDetectoAnomalia;
     }
 
+    public void setAccionTomada(String accionTomada) {
+        this.accionTomada = accionTomada;
+    }
+    public String getAccionTomada() {
+        return accionTomada;
+    }
+
+    public String toString(){
+        return "{Fecha: "+fecha+
+                ", hora: "+hora+
+                ", tipo de anomalia: "+tipoAnomalia+
+                ", dron que la detecto: "+dronDetectoAnomalia+
+                ", accion tomada: "+accionTomada
+                +"}\n";
+    }
+
+    public String toString2(){
+        return "{Fecha: "+fecha+
+                ", hora: "+hora+
+                ", tipo de anomalia: "+tipoAnomalia+
+                "}\n";
+    }
 }
