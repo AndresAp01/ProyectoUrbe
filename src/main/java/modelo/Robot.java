@@ -1,19 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
+
 import java.util.Objects;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 /**
  *
- * @author linuxman
- */
-
-
-/**
  * Notas:
  * El historial se genera luego de realizar la primera tarea, por otro lado, las tareas son fijas (no deben poseer CRUD), en el documento
  * son 6 maximo, por lo que, se decidio hacer un ArraList con numeros del 1 al 6, dependiendo de la cantidad de tareas (max 6). 
@@ -24,10 +17,13 @@ import java.util.List;
  * Por otro lado, el documento no decia como se debian cargar los robots, por ende, a la hora de un robot cargarse se le asigna automaticamente una estacion 
  * en donde siempre cargarse.
  * 
- * 
  */
 
-//Modificar robot para que sea como la regla 2 y modificar admRobot tmb.
+/**
+ * Clase que representa un Robot. Cada robot tiene un procesador, nivel de batería,
+ * estado de encendido, conexión, propietario (Ciudadano) y un conjunto de posibles tareas.
+ * Además, puede conectarse a un Cargaficio para recargar.
+ */
 public class Robot {
     private String procesador;
     private int bateria;
@@ -37,10 +33,18 @@ public class Robot {
     private Ciudadano unCiudadano;
     private boolean si_esta_en_alerta;
     private ArrayList<Tarea> posibles_tareas;
-    int valorMinimo;
-    
-    
-    public Robot (String procesador, int cantidad_tareas, int valorMinimo){
+    private int valorMinimo;
+
+    /**
+     * Constructor principal de un robot.
+     * Inicializa con batería completa, encendido y no conectado.
+     * Genera un listado aleatorio de posibles tareas.
+     * 
+     * @param procesador Nombre del procesador del robot.
+     * @param cantidad_tareas Cantidad de tareas que el robot puede realizar (máx 6).
+     * @param valorMinimo Valor mínimo de batería para ciertas operaciones.
+     */
+    public Robot(String procesador, int cantidad_tareas, int valorMinimo){
         this.procesador = procesador;
         this.bateria = 100;
         this.encendido = true;
@@ -51,88 +55,56 @@ public class Robot {
         this.posibles_tareas = getPosiblesTareas(cantidad_tareas);
         this.valorMinimo = valorMinimo;
     }
-    
+
+    /**
+     * Genera una lista aleatoria de posibles tareas para el robot.
+     * 
+     * @param cantidad Número de tareas a seleccionar.
+     * @return ArrayList con las tareas seleccionadas aleatoriamente.
+     */
     private ArrayList<Tarea> getPosiblesTareas(int cantidad) {
-        //da valores aleatorios de las posibles tareas que puede hacer el robot, llamando a la class enum Tarea
         List<Tarea> tareasDisponibles = new ArrayList<>(List.of(Tarea.values()));
         Collections.shuffle(tareasDisponibles);
         return new ArrayList<>(tareasDisponibles.subList(0, Math.min(cantidad, tareasDisponibles.size())));
     }
 
+    // Getters y Setters
 
+    public String getProcesador() { return procesador; }
+    public void setProcesador(String procesador) { this.procesador = procesador; }
 
-     // Getters y Setters
+    public int getBateria() { return bateria; }
+    public void setBateria(int bateria) { this.bateria = bateria; }
 
-    public String getProcesador() {
-        return procesador;
-    }
+    public boolean isEncendido() { return encendido; }
+    public void setEncendido(boolean encendido) { this.encendido = encendido; }
 
-    public void setProcesador(String procesador) {
-        this.procesador = procesador;
-    }
+    public boolean isConectado() { return conectado; }
+    public void setConectado(boolean conectado) { this.conectado = conectado; }
 
-    public int getBateria() {
-        return bateria;
-    }
+    public boolean isOwned() { return owned; }
+    public void setOwned(boolean owned) { this.owned = owned; }
 
-    public void setBateria(int bateria) {
-        this.bateria = bateria;
-    }
+    public Ciudadano getUnCiudadano() { return unCiudadano; }
+    public void setUnCiudadano(Ciudadano unCiudadano) { this.unCiudadano = unCiudadano; }
 
-    public boolean isEncendido() {
-        return encendido;
-    }
+    public boolean isSi_esta_en_alerta() { return si_esta_en_alerta; }
+    public void setSi_esta_en_alerta(boolean si_esta_en_alerta) { this.si_esta_en_alerta = si_esta_en_alerta; }
 
-    public void setEncendido(boolean encendido) {
-        this.encendido = encendido;
-    }
+    public ArrayList<Tarea> getPosibles_tareas() { return posibles_tareas; }
+    public void setPosibles_tareas(ArrayList<Tarea> posibles_tareas) { this.posibles_tareas = posibles_tareas; }
 
-    public boolean isConectado() {
-        return conectado;
-    }
+    public int getValorMinimo() { return valorMinimo; }
 
-    public void setConectado(boolean conectado) {
-        this.conectado = conectado;
-    }
-
-
-    public boolean isOwned() {
-        return owned;
-    }
-
-    public void setOwned(boolean owned) {
-        this.owned = owned;
-    }
-
-    public Ciudadano getUnCiudadano() {
-        return unCiudadano;
-    }
-
-    public void setUnCiudadano(Ciudadano unCiudadano) {
-        this.unCiudadano = unCiudadano;
-    }
-
-    public boolean isSi_esta_en_alerta() {
-        return si_esta_en_alerta;
-    }
-
-    public void setSi_esta_en_alerta(boolean si_esta_en_alerta) {
-        this.si_esta_en_alerta = si_esta_en_alerta;
-    }
-
-    public ArrayList<Tarea> getPosibles_tareas() {
-        return posibles_tareas;
-    }
-
-    public void setPosibles_tareas(ArrayList<Tarea> posibles_tareas) {
-        this.posibles_tareas = posibles_tareas;
-    }
-    public int getValorMinimo(){
-        return valorMinimo;
-    }
-
+    // Funciones
     
-    // funciones
+    /**
+     * Conecta el robot a un Cargaficio para recargar.
+     * Solo puede conectarse si la estación no está llena.
+     * 
+     * @param unCargaficio Estación de carga a la que se conectará el robot.
+     * @return true si se conectó correctamente, false si la estación estaba llena.
+     */
     public boolean conectarse_estacion(Cargaficio unCargaficio){
         if (unCargaficio.getEstaLleno()){
             return false;
@@ -141,8 +113,8 @@ public class Robot {
         this.setConectado(true);
         return true;
     }
-    
-    // toString()
+
+    // Representación en String
 
     @Override
     public String toString() {
@@ -151,7 +123,6 @@ public class Robot {
                 ", bateria=" + bateria +
                 ", encendido=" + encendido +
                 ", conectado=" + conectado +
-                
                 ", owned=" + owned +
                 ", unCiudadano=" + unCiudadano +
                 ", si_esta_en_alerta=" + si_esta_en_alerta +
@@ -159,9 +130,9 @@ public class Robot {
                 '}';
     }
 
-    // equals()
+    // equals() y hashCode()
 
-   @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Robot)) return false;
@@ -174,5 +145,3 @@ public class Robot {
         return Objects.hash(procesador);
     }
 }
-
-
