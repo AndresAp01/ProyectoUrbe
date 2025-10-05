@@ -3,7 +3,7 @@ package logica;
 import modelo.Anomalia;
 import modelo.Registro;
 import modelo.TipoAnomalia;
-
+import modelo.Edificio;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -75,20 +75,25 @@ public class AdmAnomalias {
      * @param tipoAnomalia (TipoAnomalia) tipo de anomalía.
      * @return (boolean) false si la acción ya existía, true si se agregó correctamente.
      */
+    //si retorna false signiica que ya habia una accion con ese nombre
     public boolean asignarNuevaAccion(String nuevaAccion, TipoAnomalia tipoAnomalia) {
-        for (Anomalia anomalia : listaAnomalias) {
-            if (anomalia.getTipoAnomalia().equals(tipoAnomalia)) {
-                ArrayList<String> listaAcciones = anomalia.getListaAcciones();
-                for (String accion : listaAcciones) {
-                    if (accion.equals(nuevaAccion)) {
-                        return false;
-                    }
-                }
-                listaAcciones.add(nuevaAccion);
-                anomalia.setListaAcciones(listaAcciones);
+    boolean accionAsignada = false;
+
+    for (Anomalia anomalia : listaAnomalias) {
+        if (anomalia.getTipoAnomalia().equals(tipoAnomalia)) {
+            ArrayList<String> listaAcciones = anomalia.getListaAcciones();
+            
+            if (listaAcciones.contains(nuevaAccion)) {
+                return false; // La acción ya existe para una anomalia de ese tipo
             }
+
+            listaAcciones.add(nuevaAccion);
+            anomalia.setListaAcciones(listaAcciones);
+            accionAsignada = true;
         }
-        return true;
+    }
+
+    return accionAsignada; //se agrego esto porque daba true aun cuando no existia la anomalia en listaAnomalias
     }
 
     /**
@@ -173,4 +178,5 @@ public class AdmAnomalias {
         return "Lista Anomalias no detectadas: \n" + listaAnomaliasNoDetectadas;
     }
 }
+
 

@@ -1,33 +1,25 @@
 package logica;
 
 import modelo.*;
+
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
-/**
- * Clase que representa el perfil del administrador del sistema.
- * Esta clase centraliza la gestión de entidades como edificios, cargaficios, drones, robots,
- * ciudadanos, anomalías y reglas. Además, integra perfiles de operador y general para permitir
- * operaciones administrativas, de simulación y de consulta de información.
- */
 public class PerfilAdmin {
-
     private AdmEdificio admEdificio;
     private AdmCargaficios admCargaficios;
     private AdmDron admDron;
     private AdmRobots admRobots;
-    private AdmCiudadanos admCiudadanos;
+    private AdmCiudadanos  admCiudadanos;
     private AdmAnomalias admAnomalias;
     private AdmReglas admReglas;
-    private CInteligencia cInteligencia;
+    private CInteligencia  cInteligencia;
     private PerfilOperador perfilOperador;
     private PerfilGeneral perfilGeneral;
     private CantTareasUsadas cantTareasUsadas;
 
-    /**
-     * Constructor por defecto. Inicializa todos los administradores y perfiles del sistema.
-     */
-    public PerfilAdmin() {
+    public PerfilAdmin(){
         this.admEdificio = new AdmEdificio();
         this.admCargaficios = new AdmCargaficios();
         this.admDron = new AdmDron();
@@ -41,221 +33,179 @@ public class PerfilAdmin {
         this.cantTareasUsadas = new CantTareasUsadas();
     }
 
-    /** @return administrador de edificios */
-    public AdmEdificio getAdmEdificio() { return admEdificio; }
-
-    /** @return administrador de cargaficios */
-    public AdmCargaficios getAdmCargaficios() { return admCargaficios; }
-
-    /** @return administrador de drones */
-    public AdmDron getAdmDron() { return admDron; }
-
-    /** @return administrador de robots */
-    public AdmRobots getAdmRobots() { return admRobots; }
-
-    /** @return administrador de ciudadanos */
-    public AdmCiudadanos getAdmCiudadanos() { return admCiudadanos; }
-
-    /** @return administrador de anomalías */
-    public AdmAnomalias getAdmAnomalias() { return admAnomalias; }
-
-    /** @return administrador de reglas */
-    public AdmReglas getAdmReglas() { return admReglas; }
-
-    /** @return perfil del operador */
-    public PerfilOperador getPerfilOperador() { return perfilOperador; }
-
-    /** @return componente de inteligencia */
-    public CInteligencia getCInteligencia() { return cInteligencia; }
-
-    /** @return contador de tareas usadas */
-    public CantTareasUsadas getCantTareasUsadas() { return cantTareasUsadas; }
-
-    // --------------------------------------- PARTE EXCLUSIVAMENTE DE ADMINISTRADOR ---------------------------------------
-
-    /**
-     * Crea edificios según la opción especificada.
-     * @param opcion (int) 0 para generar una cantidad aleatoria, o un número entre 3 y 10 para indicar una cantidad específica.
-     * @return (boolean) true si la creación fue exitosa, false en caso contrario.
-     */
-    public boolean crearEdificios(int opcion) {
-        return admEdificio.agregarEdificios(opcion);
+    public AdmEdificio getAdmEdificio() {
+        return admEdificio;
+    }
+    public AdmCargaficios getAdmCargaficios() {
+        return admCargaficios;
+    }
+    public AdmDron getAdmDron() {
+        return admDron;
+    }
+    public AdmRobots getAdmRobots() {
+        return admRobots;
+    }
+    public AdmCiudadanos getAdmCiudadanos() {
+        return admCiudadanos;
+    }
+    public AdmAnomalias getAdmAnomalias() {
+        return admAnomalias;
+    }
+    public AdmReglas getAdmReglas() {
+        return admReglas;
+    }
+    public  PerfilOperador getPerfilOperador() {
+        return perfilOperador;
+    }
+    public CInteligencia getCInteligencia() {
+        return cInteligencia;
+    }
+    public CantTareasUsadas getCantTareasUsadas(){
+        return cantTareasUsadas;
     }
 
-    /**
-     * Muestra la información de los edificios existentes.
-     * @return (String) representación textual de los edificios.
-     */
-    public String mostrarEdificios() {
+    //--------------------------------------- PARTE EXLUSIVAMENTE DE ADMINISTRADOR ---------------------------------------
+
+    //la variable opcion sera 0 si decide que quiere generar una cantidad random,
+    // cualquier numero entre 3 y 10 indica la cantidad especifica de edificios a crear
+    public boolean crearEdificios(int opcion){
+        if (opcion==0){
+            return admEdificio.agregarEdificios(opcion);
+        }
+        else{
+            return admEdificio.agregarEdificios(opcion);
+        }
+    }
+
+    public String mostrarEdificios(){
         return admEdificio.toString();
     }
 
-    /**
-     * Crea cargaficios según la opción especificada.
-     * @param opcion (int) 0 para generar una cantidad aleatoria o un número fijo de cargaficios.
-     * @return (boolean) true si la creación fue exitosa.
-     */
-    public boolean crearCargaficios(int opcion) {
-        return admCargaficios.agregarCargaficios(opcion);
+    public boolean crearCargaficios(int opcion){
+        if (opcion==0){
+            return admCargaficios.agregarCargaficios(opcion);
     }
+        else {
+            return admCargaficios.agregarCargaficios(opcion);
+        }
+    }
+    
 
-    /**
-     * Retorna la lista de cargaficios para modificar su estado desde la interfaz.
-     * @return (ArrayList&lt;Cargaficio&gt;) lista de cargaficios actuales.
-     */
-    public ArrayList<Cargaficio> modificarEstadoCargaficios() {
+    //Devuelve la lista para hacer un for y modificar desde la interfaz el estado de cada cargaficio generado
+    public ArrayList<Cargaficio> modificarEstadoCargaficios(){
         return admCargaficios.retornarListaCargaficios();
     }
 
-    /**
-     * Crea una lista de anomalías con base en índices dados.
-     * @param index (int[]) índices de anomalías a crear.
-     * @return (boolean) true si las anomalías fueron creadas exitosamente.
-     */
-    public boolean crearAnomalias(int[] index) {
+    public boolean crearAnomalias(int[] index){
         return admAnomalias.crearListaAnomalias(index);
     }
 
-    /**
-     * Muestra las anomalías existentes.
-     * @return (String) representación textual de las anomalías.
-     */
-    public String mostrarAnomalias() {
-        return admAnomalias.toString();
+    public String mostrarAnomalias(){
+        return  admAnomalias.toString();
     }
 
-    /**
-     * Crea una nueva acción asociada a un tipo de anomalía.
-     * @param nuevaAccion (String) descripción de la acción.
-     * @param tipoAnomalia (TipoAnomalia) tipo de anomalía a la que se asigna la acción.
-     * @return (boolean) true si la acción fue creada exitosamente.
-     */
-    public boolean crearNuevaAccion(String nuevaAccion, TipoAnomalia tipoAnomalia) {
+    public boolean crearNuevaAccion(String nuevaAccion, TipoAnomalia tipoAnomalia){
         return admAnomalias.asignarNuevaAccion(nuevaAccion, tipoAnomalia);
     }
 
-    /**
-     * Elimina una acción de un tipo de anomalía.
-     * @param indexEliminar (int) índice de la acción a eliminar.
-     * @param tipoAnomalia (TipoAnomalia) tipo de anomalía afectado.
-     * @return (boolean) true si la eliminación fue exitosa.
-     */
     public boolean eliminarAccion(int indexEliminar, TipoAnomalia tipoAnomalia) {
         return admAnomalias.eliminarAccion(indexEliminar, tipoAnomalia);
     }
 
-    /**
-     * Modifica una acción existente asociada a un tipo de anomalía.
-     * @param indexModificar (int) índice de la acción a modificar.
-     * @param modificacion (String) nueva descripción de la acción.
-     * @param tipoAnomalia (TipoAnomalia) tipo de anomalía afectado.
-     * @return (boolean) true si la modificación fue exitosa.
-     */
     public boolean modificarAccion(int indexModificar, String modificacion, TipoAnomalia tipoAnomalia) {
         return admAnomalias.modificarAccion(indexModificar, modificacion, tipoAnomalia);
     }
 
-    /**
-     * Crea la lista de reglas del sistema.
-     * @return (boolean) true si se generó correctamente.
-     */
-    public boolean crearListaReglas() {
+    public boolean crearListaReglas(){
         return admReglas.crearListaReglas();
     }
 
-    /**
-     * Activa reglas según los parámetros dados.
-     * @param op (int) número de la regla a activar.
-     * @param valorMinimo (int) valor mínimo requerido para la activación.
-     * @return (boolean) true si la regla fue activada correctamente.
-     */
-    public boolean activarReglas(int op, int valorMinimo) {
+    public boolean activarReglas(int op, int valorMinimo){
         return admReglas.activarReglas(op, valorMinimo);
     }
 
-    /**
-     * Desactiva una regla específica.
-     * @param op (int) número de la regla a desactivar.
-     * @return (boolean) true si fue desactivada correctamente.
-     */
     public boolean desactivarReglas(int op) {
         return admReglas.desactivarReglas(op);
     }
 
-    /**
-     * Muestra la lista actual de reglas.
-     * @return (String) representación textual de las reglas.
-     */
-    public String mostrarListaReglas() {
+    public String mostrarListaReglas(){
         return admReglas.toString();
     }
 
-    /**
-     * Muestra la información de todos los cargaficios.
-     * @return (String) representación textual de los cargaficios.
-     */
-    public String mostrarCargaficios() {
+    public String mostrarCargaficios(){
         return admCargaficios.toString();
     }
 
-    // --------------------------------------- PARTE DE OPERADOR ---------------------------------------
+    //--------------------------------------- PARTE DE OPERADOR  ---------------------------------------
 
-    /**
-     * Crea drones mediante las funciones del perfil operador.
-     * @return (boolean) true si los drones fueron creados correctamente.
-     */
-    public boolean crearDronesMedianteOperador() {
-        return perfilOperador.crearDrones(getAdmEdificio(), getAdmDron());
+    public boolean crearDronesMedianteOperador(){
+        return perfilOperador.crearDrones(getAdmEdificio(),getAdmDron());
     }
 
-    /**
-     * Ejecuta la simulación mediante el perfil operador.
-     * @return (boolean) true si la simulación fue realizada correctamente.
-     */
-    public boolean simulateMedianteOperador() {
-        return perfilOperador.simulate(
-                getAdmCiudadanos(),
-                getAdmRobots(),
-                getAdmReglas(),
-                getAdmDron(),
-                getAdmCargaficios(),
-                getAdmAnomalias(),
-                getCInteligencia(),
-                getCantTareasUsadas()
-        );
+    public boolean simulateMedianteOperador(){
+        return perfilOperador.simulate(getAdmCiudadanos(),getAdmRobots(),getAdmReglas(),getAdmDron(),getAdmCargaficios(), getAdmAnomalias(), getCInteligencia(), getCantTareasUsadas(), getAdmEdificio());
     }
 
-    /**
-     * Muestra los drones creados mediante el operador.
-     * @return (boolean) true si se mostraron correctamente.
-     */
-    public boolean mostrarDronesMedianteOperador() {
+    public boolean mostrarDronesMedianteOperador(){
         return perfilOperador.mostrarDrones(getAdmDron());
     }
-
-    /**
-     * Crea robots mediante el perfil operador.
-     * @param nrobots (int) número de robots a crear.
-     * @return (boolean) true si los robots fueron creados exitosamente.
-     */
-    public boolean crearRobotsMedianteOperador(int nrobots) {
+    
+    public boolean crearRobotsMedianteOperador(int nrobots){
         return perfilOperador.crearRobots(nrobots, getAdmRobots(), getAdmReglas().getListaReglas().get(1));
     }
-
-    /**
-     * Crea ciudadanos mediante el perfil operador.
-     * @param nCiudadanos (int) número de ciudadanos a crear.
-     * @return (boolean) true si los ciudadanos fueron creados correctamente.
-     */
-    public boolean crearCiudadanosMedianteOperador(int nCiudadanos) {
+    
+    public boolean crearCiudadanosMedianteOperador(int nCiudadanos){
         return perfilOperador.crearCiudadanos(nCiudadanos, getAdmCiudadanos(), getAdmEdificio());
     }
+    
+    public boolean asignarRobotCiudadanoMedianteOperador(String id, String procesador){
+        return perfilOperador.asignarRobotCiudadano(id, procesador, getAdmCiudadanos(), getAdmRobots());
+    }
+    
+    public boolean mostrarRobotsMedianteOperador(){
+        return perfilOperador.mostrarRobots(getAdmRobots());
+    }
+    
+    public boolean mostrarCiudadanosMedianteOperador(){
+        return perfilOperador.mostrarCiudadanos(getAdmCiudadanos());
+    }
 
-    /**
-     * Asigna un robot a un ciudadano mediante el operador.
-     * @param id (String) identificador del ciudadano.
-     * @param procesador (String) procesador del robot a asignar.
-     * @return (boolean) true si la asignación fue exitosa.
-     */
-    public boolean asignarRobotCiudadanoMedianteOperador(String id, String procesador) {
-        return perfilOperador.asignarRobotCiudadano(id,
+    //--------------------------------------- PARTE DE GENERAL  ---------------------------------------
+
+    public int porcentajeRobotsAlertaMedianteGeneral() { return perfilGeneral.conseguirPorcentajeRobotsAlerta(getAdmRobots()); }
+
+    public Map<Edificio, DatosRobotEdificio> obtenerDatosPorEdificioMedianteGeneral() { return perfilGeneral.obtenerDatosPorEdificio(getAdmEdificio()); }
+    
+    public ArrayList cantTareasUsadas(){return perfilGeneral.cantTareasUsadas(cantTareasUsadas);}
+        
+    public int cantCargaficiosDisponiblesMedianteGeneral() { return perfilGeneral.cantidadCargaficiosDisponibles(getAdmCargaficios()); }
+
+    public int PorcentajeCargaficiosDisponiblesMedianteGeneral() { return perfilGeneral.porcentajeCargaficiosDisponibles(admCargaficios);}
+    
+    public ArrayList desgloseEnergiaCargaficioMedianteGeneral(String idCargaficio) { return perfilGeneral.desgloseEnergia(getAdmCargaficios(), idCargaficio);}
+    
+    public Map <Cargaficio, DatosCargaficioOcupacionEstado> obtenerDatosPorCargaficioMedianteGeneral() { return perfilGeneral.obtenerDatosPorCargaficio(admCargaficios);}
+    
+    public int edificiosImpactadosMedianteGeneral() { return perfilGeneral.edificiosImpactados(getAdmEdificio(),getAdmAnomalias()); }
+
+    public ArrayList<ArrayList<Integer>> porTipoAnomaliaYEdificioMedianteGeneral () { return perfilGeneral.porTipoAnomaliaYEdificio(getAdmEdificio(), getAdmAnomalias()); }
+
+    public ArrayList<ArrayList> porAccionEjecutadaMedianteGeneral() { return perfilGeneral.porAccionEjecutada(getCInteligencia(), getAdmAnomalias()); }
+
+    public ArrayList<ArrayList> tablaEdificiosIncidentesMedianteGeneral() { return perfilGeneral.tablaEdificiosIncidentes(getAdmEdificio(), getAdmAnomalias(), getCInteligencia()); }
+
+    public ArrayList<String> mayorReincidenciaMedianteGeneral() { return perfilGeneral.mayorReincidencia(getAdmEdificio(), getAdmAnomalias()); }
+    
+    public ArrayList ocupacionPorEdificioMedianteGeneral(){ return perfilGeneral.ocupacionPorEdificio(admEdificio);}
+    
+    public ArrayList desglosesEdificiosMedianteGeneral(String idEdificio){ return perfilGeneral.desgloseEdificios(getAdmEdificio(), idEdificio);}
+    
+    public ArrayList<Edificio> Top3MayorOcupacionMedianteGeneral(){ return perfilGeneral.ConseguirTop3MayorOcupacion(admEdificio);}
+    
+    public ArrayList<Edificio> Top3MayorCiudadanosSinRobotMedianteGeneral() { return perfilGeneral.ConseguirTop3MayorCiudadanosSinRobot(admEdificio); }
+    
+    public ArrayList<Edificio> Top3MayorCantRobotsAlertaMedianteGeneral() { return perfilGeneral.ConseguirTop3MayorRobotsAlerta(admEdificio);}
+    
+    public ArrayList InfoSobreAsignacionMedianteGeneral() { return perfilGeneral.InfoSobreAsignacion(admEdificio); }
+    
+}

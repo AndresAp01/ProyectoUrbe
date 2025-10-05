@@ -1,14 +1,17 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package modelo;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
 import logica.CantTareasUsadas;
-
+import modelo.Regla;
 /**
- * Clase que representa un Ciudadano dentro de la ciudad.
- * Un ciudadano puede poseer robots, vivir en un edificio, realizar tareas y mantener un historial de actividades.
+ *
+ * @author linuxman
  */
 public class Ciudadano {
     private String id;
@@ -17,15 +20,8 @@ public class Ciudadano {
     private int tareas_rechazadas;
     private int tareas_hechas;
     private ArrayList<String> historial;
-
-    /**
-     * Constructor de la clase Ciudadano.
-     * Inicializa un ciudadano con ID y edificio habitado, y listas vacías de robots e historial.
-     *
-     * @param id Identificador único del ciudadano.
-     * @param unEdificio Edificio en el que habita el ciudadano.
-     */
-    public Ciudadano(String id, Edificio unEdificio) {
+    
+    public Ciudadano (String id, Edificio unEdificio){
         this.id = id;
         this.robots_owned = new ArrayList<>();
         this.edificio_habitado = unEdificio;
@@ -33,201 +29,193 @@ public class Ciudadano {
         this.tareas_hechas = 0;
         this.historial = new ArrayList<>();
     }
+    
+    //setters y getters
+    public String getId() {
+        return id;
+    }
 
-    // Getters y Setters
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    /** @return ID del ciudadano */
-    public String getId() { return id; }
+    public ArrayList<Robot> getRobots_owned() {
+        return robots_owned;
+    }
 
-    /** @param id Nuevo ID del ciudadano */
-    public void setId(String id) { this.id = id; }
+    public void setRobots_owned(ArrayList<Robot> robots_owned) {
+        this.robots_owned = robots_owned;
+    }
 
-    /** @return Lista de robots que posee el ciudadano */
-    public ArrayList<Robot> getRobots_owned() { return robots_owned; }
+    public Edificio getEdificio_habitado() {
+        return edificio_habitado;
+    }
 
-    /** @param robots_owned Nueva lista de robots propiedad del ciudadano */
-    public void setRobots_owned(ArrayList<Robot> robots_owned) { this.robots_owned = robots_owned; }
+    public void setEdificio_habitado(Edificio edificio_habitado) {
+        this.edificio_habitado = edificio_habitado;
+    }
 
-    /** @return Edificio en el que habita el ciudadano */
-    public Edificio getEdificio_habitado() { return edificio_habitado; }
+    public int getTareas_rechazadas() {
+        return tareas_rechazadas;
+    }
 
-    /** @param edificio_habitado Nuevo edificio habitado por el ciudadano */
-    public void setEdificio_habitado(Edificio edificio_habitado) { this.edificio_habitado = edificio_habitado; }
+    public void setTareas_rechazadas(int tareas_rechazadas) {
+        this.tareas_rechazadas = tareas_rechazadas;
+    }
 
-    /** @return Cantidad de tareas rechazadas por el ciudadano */
-    public int getTareas_rechazadas() { return tareas_rechazadas; }
+    public int getTareas_hechas() {
+        return tareas_hechas;
+    }
 
-    /** @param tareas_rechazadas Nueva cantidad de tareas rechazadas */
-    public void setTareas_rechazadas(int tareas_rechazadas) { this.tareas_rechazadas = tareas_rechazadas; }
+    public void setTareas_hechas(int tareas_hechas) {
+        this.tareas_hechas = tareas_hechas;
+    }
+    
+    public ArrayList<String> getHistorial() {
+        return historial;
+    }
 
-    /** @return Cantidad de tareas realizadas por el ciudadano */
-    public int getTareas_hechas() { return tareas_hechas; }
-
-    /** @param tareas_hechas Nueva cantidad de tareas realizadas */
-    public void setTareas_hechas(int tareas_hechas) { this.tareas_hechas = tareas_hechas; }
-
-    /** @return Historial de actividades del ciudadano */
-    public ArrayList<String> getHistorial() { return historial; }
-
-    /** @param historial Nuevo historial de actividades */
-    public void setHistorial(ArrayList<String> historial) { this.historial = historial; }
-
-    // Funciones de gestión
-
-    /**
-     * Asigna un robot al ciudadano si aún no lo posee.
-     *
-     * @param unRobot Robot a asignar
-     * @return true si se asignó correctamente, false si ya estaba asignado
-     */
-    public boolean asignar_robot(Robot unRobot) {
-        for (Robot RobotActual : robots_owned)
-            if (RobotActual.equals(unRobot)) {
+    public void setHistorial(ArrayList<String> historial) {
+        this.historial = historial;
+    }
+    
+    //funciones
+    public boolean asignar_robot(Robot unRobot){
+        for (Robot RobotActual: robots_owned)
+            if (RobotActual.equals(unRobot)){
                 return false;
             }
         robots_owned.add(unRobot);
+        unRobot.setOwned(true);
+        unRobot.setUnCiudadano(this.getId());
         return true;
     }
-
-    /**
-     * Permite al ciudadano mudarse a otro edificio.
-     *
-     * @param unEdificio Edificio al que desea mudarse
-     * @return true si la mudanza fue exitosa, false si no fue posible
-     */
-    public boolean mudarse(Edificio unEdificio) {
+    
+    public boolean mudarse(Edificio unEdificio){
         return unEdificio.agregarCiudadano(this);
     }
-
-    /**
-     * Permite al ciudadano pedir a un robot realizar una tarea específica.
-     * Se verifica que el robot tenga la tarea disponible y suficiente batería.
-     * Actualiza el historial y las estadísticas de tareas hechas/rechazadas.
-     *
-     * @param cantTareasUsadas Objeto que registra la cantidad de tareas realizadas por tipo
-     * @return true si la tarea fue realizada exitosamente, false si no fue posible
-     */
-    public boolean pedir_tarea(CantTareasUsadas cantTareasUsadas) {
+    
+    public boolean pedir_tarea(CantTareasUsadas cantTareasUsadas, Regla regla){
+        
         Random rand = new Random();
-        if (!robots_owned.isEmpty()) {
+        if (!robots_owned.isEmpty()){
             int indice = rand.nextInt(robots_owned.size());
             Robot aleatorio = robots_owned.get(indice);
             List<Tarea> tareasDisponibles = new ArrayList<>(List.of(Tarea.values()));
             int indice_tarea = rand.nextInt(6);
             Tarea tarea_a_realizar = tareasDisponibles.get(indice_tarea);
-
-            if (aleatorio.getPosibles_tareas().contains(tarea_a_realizar) && aleatorio.isEncendido()) {
-                // Dependiendo del tipo de tarea, se resta batería y se actualiza historial
-                if (tarea_a_realizar == Tarea.MEDICO) {
-                    if ((aleatorio.getBateria() - 5) < 0) {
+            if (regla.activa){ //si la regla esta activa su valor minimo es el de la regla
+                if (aleatorio.getBateria() <= regla.getValorMinimoBateria()){
+                    aleatorio.setSi_esta_en_alerta(true);
+                    aleatorio.setEncendido(false); //se apaga y luego admRobots revisa si se debe conectar a alguna estacion disponible
+                }
+               
+            } else { //si no toma su valorMInimo interno
+            if (aleatorio.getBateria() <= aleatorio.getValorMinimo()){
+                    aleatorio.setEncendido(false); //se apaga y luego admRobots revisa si se debe conectar a alguna estacion disponible
+                    aleatorio.setSi_esta_en_alerta(true);
+                }
+            }
+            //ahora genera sus tareas
+            if (aleatorio.getPosibles_tareas().contains(tarea_a_realizar) && aleatorio.isEncendido()){
+                //realiza las tareas dependiendo de que posea dentro
+                if (tarea_a_realizar == Tarea.MEDICO){
+                    if ((aleatorio.getBateria() - 5) < 0){
                         tareas_rechazadas += 1;
                         return false;
                     }
-                    String detalle = "Tarea: Agendar Cita Medica, atendida por Robot: " + aleatorio.getProcesador() + " a las: " + LocalDateTime.now();
+                    String detalle = "Tarea: Agendar Cita Medica, atendida por Robot:  "+aleatorio.getProcesador()+" a las: " + LocalDateTime.now();
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 5);
-                    cantTareasUsadas.setCantMedico(cantTareasUsadas.getCantMedico() + 1);
+                    cantTareasUsadas.setCantMedico(cantTareasUsadas.getCantMedico()+1);
                     return true;
                 }
-
-                if (tarea_a_realizar == Tarea.DORMITORIO) {
-                    if ((aleatorio.getBateria() - 15) < 0) {
+                
+                if (tarea_a_realizar == Tarea.DORMITORIO){
+                    if ((aleatorio.getBateria() - 15) < 0){
                         tareas_rechazadas += 1;
                         return false;
                     }
-                    String detalle = "Tarea: Asear Dormitorio atendida por Robot: " + aleatorio.getProcesador() + " a las: " + LocalDateTime.now();
+                    String detalle = "Tarea: Asear Dormitorio atendida por Robot:  "+aleatorio.getProcesador()+" a las: " + LocalDateTime.now();
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 15);
-                    cantTareasUsadas.setCantDormitorio(cantTareasUsadas.getCantDormitorio() + 1);
+                    cantTareasUsadas.setCantDormitorio(cantTareasUsadas.getCantDormitorio()+1);
                     return true;
                 }
-
-                if (tarea_a_realizar == Tarea.COMPRAR) {
-                    if ((aleatorio.getBateria() - 10) < 0) {
+                
+                if (tarea_a_realizar == Tarea.COMPRAR){
+                    if ((aleatorio.getBateria() - 10) < 0){
                         tareas_rechazadas += 1;
                         return false;
                     }
-                    String detalle = "Tarea: Comprar alimentos: " + aleatorio.getProcesador() + " a las: " + LocalDateTime.now();
+                    String detalle = "Tarea: Comprar alimentos:  "+aleatorio.getProcesador()+" a las: " + LocalDateTime.now();
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 10);
-                    cantTareasUsadas.setCantAlimentos(cantTareasUsadas.getCantAlimentos() + 1);
+                    cantTareasUsadas.setCantAlimentos(cantTareasUsadas.getCantAlimentos()+1);
                     return true;
                 }
-
-                if (tarea_a_realizar == Tarea.REGAR) {
-                    if ((aleatorio.getBateria() - 5) < 0) {
+                
+                if (tarea_a_realizar == Tarea.REGAR){
+                    if ((aleatorio.getBateria() - 5) < 0){
                         tareas_rechazadas += 1;
                         return false;
                     }
-                    String detalle = "Tarea: Regar las plantas atendida por Robot: " + aleatorio.getProcesador() + " a las: " + LocalDateTime.now();
+                    String detalle = "Tarea: Regar las plantas atendida por Robot:  "+aleatorio.getProcesador()+" a las: " + LocalDateTime.now();
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 5);
-                    cantTareasUsadas.setCantPlantas(cantTareasUsadas.getCantPlantas() + 1);
+                    cantTareasUsadas.setCantPlantas(cantTareasUsadas.getCantPlantas()+1);
                     return true;
                 }
-
-                if (tarea_a_realizar == Tarea.PASEO) {
-                    if ((aleatorio.getBateria() - 20) < 0) {
+                
+                if (tarea_a_realizar == Tarea.PASEO){
+                    if ((aleatorio.getBateria() - 20) < 0){
                         tareas_rechazadas += 1;
                         return false;
                     }
-                    String detalle = "Tarea: Pasear con Usuario atendida por Robot: " + aleatorio.getProcesador() + " a las: " + LocalDateTime.now();
+                    String detalle = "Tarea: Pasear con Usuario atendida por Robot:  "+aleatorio.getProcesador()+" a las: " + LocalDateTime.now();
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 20);
-                    cantTareasUsadas.setCantPaseo(cantTareasUsadas.getCantPaseo() + 1);
+                    cantTareasUsadas.setCantPaseo(cantTareasUsadas.getCantPaseo()+1);
                     return true;
                 }
-
-                if (tarea_a_realizar == Tarea.REUNION) {
-                    if ((aleatorio.getBateria() - 25) < 0) {
+                
+                if (tarea_a_realizar == Tarea.REUNION){
+                    if ((aleatorio.getBateria() - 25) < 0){
                         tareas_rechazadas += 1;
                         return false;
                     }
-                    String detalle = "Tarea: Asistir Reunion con Usuario atendida por Robot: " + aleatorio.getProcesador() + " a las: " + LocalDateTime.now();
+                    String detalle = "Tarea: Asistir Reunion con Usuario atendida por Robot:  "+aleatorio.getProcesador()+" a las: " + LocalDateTime.now();
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 25);
-                    cantTareasUsadas.setCantReunion(cantTareasUsadas.getCantReunion() + 1);
+                    cantTareasUsadas.setCantReunion(cantTareasUsadas.getCantReunion()+1);
                     return true;
                 }
             }
-
-            if (aleatorio.getBateria() <= aleatorio.getValorMinimo()) {
-                aleatorio.setEncendido(false); // Apaga robot si batería mínima alcanzada
-            }
-            return false; // robot no puede realizar la tarea
+            
+            return false; //el robot no contiene la tarea a realizar 
         }
-        return false; // ciudadano no posee robots
+        return false; //el Ciudadano no posee robots
     }
-
-    // ToString, equals y hashCode
-
-    /**
-     * Representación en String del ciudadano, incluyendo ID, cantidad de robots y historial.
-     * @return Detalles del ciudadano en formato String
-     */
+    
+    //To string
     @Override
     public String toString() {
         return "Ciudadano{" +
                 "id='" + id + '\'' +
                 ", robots_owned=" + robots_owned.size() +
-                ", edificio_habitado=" + (edificio_habitado != null ? edificio_habitado.toString() : "null") +
+                ", edificio_habitado=" + (edificio_habitado != null ? edificio_habitado.getId() : "null") +
                 ", tareas_rechazadas=" + tareas_rechazadas +
-                ", tareas_hechas=" + tareas_hechas +
-                ", historial=" + historial +
+                ", tareas_hechas=" + tareas_hechas + ", historial=" + historial +
                 '}';
     }
 
-    /**
-     * Compara ciudadanos únicamente por su ID.
-     * @param obj Objeto a comparar
-     * @return true si los IDs coinciden, false en caso contrario
-     */
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -239,12 +227,9 @@ public class Ciudadano {
         return this.id != null && this.id.equals(other.id);
     }
 
-    /**
-     * Genera hash basado en el ID del ciudadano.
-     * @return Hashcode del ciudadano
-     */
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
 }
