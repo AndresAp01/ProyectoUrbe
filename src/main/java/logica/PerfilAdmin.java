@@ -16,8 +16,9 @@ public class PerfilAdmin {
     private CInteligencia  cInteligencia;
     private PerfilOperador perfilOperador;
     private PerfilGeneral perfilGeneral;
+    private CantTareasUsadas cantTareasUsadas;
 
-    PerfilAdmin(){
+    public PerfilAdmin(){
         this.admEdificio = new AdmEdificio();
         this.admCargaficios = new AdmCargaficios();
         this.admDron = new AdmDron();
@@ -28,6 +29,7 @@ public class PerfilAdmin {
         this.cInteligencia = new CInteligencia();
         this.perfilOperador = new PerfilOperador();
         this.perfilGeneral = new PerfilGeneral();
+        this.cantTareasUsadas = new CantTareasUsadas();
     }
 
     public AdmEdificio getAdmEdificio() {
@@ -56,6 +58,9 @@ public class PerfilAdmin {
     }
     public CInteligencia getCInteligencia() {
         return cInteligencia;
+    }
+    public CantTareasUsadas getCantTareasUsadas(){
+        return cantTareasUsadas;
     }
 
     //--------------------------------------- PARTE EXLUSIVAMENTE DE ADMINISTRADOR ---------------------------------------
@@ -136,11 +141,23 @@ public class PerfilAdmin {
     }
 
     public boolean simulateMedianteOperador(){
-        return perfilOperador.simulate(getAdmCiudadanos(),getAdmRobots(),getAdmReglas(),getAdmDron(),getAdmCargaficios(), getAdmAnomalias(), getCInteligencia());
+        return perfilOperador.simulate(getAdmCiudadanos(),getAdmRobots(),getAdmReglas(),getAdmDron(),getAdmCargaficios(), getAdmAnomalias(), getCInteligencia(), getCantTareasUsadas());
     }
 
     public boolean mostrarDronesMedianteOperador(){
         return perfilOperador.mostrarDrones(getAdmDron());
+    }
+    
+    public boolean crearRobotsMedianteOperador(int nrobots){
+        return perfilOperador.crearRobots(nrobots, getAdmRobots(), getAdmReglas().getListaReglas().get(1));
+    }
+    
+    public boolean crearCiudadanosMedianteOperador(int nCiudadanos){
+        return perfilOperador.crearCiudadanos(nCiudadanos, getAdmCiudadanos(), getAdmEdificio());
+    }
+    
+    public boolean asignarRobotCiudadanoMedianteOperador(String id, String procesador){
+        return perfilOperador.asignarRobotCiudadano(id, procesador, getAdmCiudadanos(), getAdmRobots());
     }
 
     //--------------------------------------- PARTE DE GENERAL  ---------------------------------------
@@ -148,9 +165,17 @@ public class PerfilAdmin {
     public int porcentajeRobotsAlertaMedianteGeneral() { return perfilGeneral.conseguirPorcentajeRobotsAlerta(getAdmRobots()); }
 
     public Map<Edificio, DatosRobotEdificio> obtenerDatosPorEdificioMedianteGeneral() { return perfilGeneral.obtenerDatosPorEdificio(getAdmEdificio()); }
-
+    
+    public ArrayList cantTareasUsadas(){return perfilGeneral.cantTareasUsadas(cantTareasUsadas);}
+        
     public int cantCargaficiosDisponiblesMedianteGeneral() { return perfilGeneral.cantidadCargaficiosDisponibles(getAdmCargaficios()); }
 
+    public int PorcentajeCargaficiosDisponiblesMedianteGeneral() { return perfilGeneral.porcentajeCargaficiosDisponibles(admCargaficios);}
+    
+    public ArrayList desgloseEnergiaCargaficioMedianteGeneral(Cargaficio unCargaficio) { return perfilGeneral.desgloseEnergia(unCargaficio);}
+    
+    public Map <Cargaficio, DatosCargaficioOcupacionEstado> obtenerDatosPorCargaficioMedianteGeneral() { return perfilGeneral.obtenerDatosPorCargaficio(admCargaficios);}
+    
     public int edificiosImpactadosMedianteGeneral() { return perfilGeneral.edificiosImpactados(getAdmEdificio(),getAdmAnomalias()); }
 
     public ArrayList<ArrayList<Integer>> porTipoAnomaliaYEdificioMedianteGeneral () { return perfilGeneral.porTipoAnomaliaYEdificio(getAdmEdificio(), getAdmAnomalias()); }
@@ -160,5 +185,17 @@ public class PerfilAdmin {
     public ArrayList<ArrayList> tablaEdificiosIncidentesMedianteGeneral() { return perfilGeneral.tablaEdificiosIncidentes(getAdmEdificio(), getAdmAnomalias(), getCInteligencia()); }
 
     public ArrayList<String> mayorReincidenciaMedianteGeneral() { return perfilGeneral.mayorReincidencia(getAdmEdificio(), getAdmAnomalias()); }
-
+    
+    public ArrayList ocupacionPorEdificioMedianteGeneral(){ return perfilGeneral.ocupacionPorEdificio(admEdificio);}
+    
+    public ArrayList desglosesEdificiosMedianteGeneral(Edificio unEdificio){ return perfilGeneral.desgloseEdificios(unEdificio);}
+    
+    public ArrayList<Edificio> Top3MayorOcupacionMedianteGeneral(){ return perfilGeneral.ConseguirTop3MayorOcupacion(admEdificio);}
+    
+    public ArrayList<Edificio> Top3MayorCiudadanosSinRobotMedianteGeneral() { return perfilGeneral.ConseguirTop3MayorCiudadanosSinRobot(admEdificio); }
+    
+    public ArrayList<Edificio> Top3MayorCantRobotsAlertaMedianteGeneral() { return perfilGeneral.ConseguirTop3MayorRobotsAlerta(admEdificio);}
+    
+    public ArrayList InfoSobreAsignacionMedianteGeneral() { return perfilGeneral.InfoSobreAsignacion(admEdificio); }
+    
 }

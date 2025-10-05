@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import modelo.Robot;
 import modelo.Cargaficio;
-
+import modelo.Regla;
 import java.util.Random;
 
 /**
@@ -92,7 +92,7 @@ public class AdmRobots {
         return true; //todos se conectaron hay suficientes cargaficios para todos.
     }
     
-    public boolean crearListaRobots(int cant){
+    public boolean crearListaRobots(int cant, Regla regla){
         
         for (int i = (listaRobots.size()+1); i<=(cant+listaRobots.size()+1); i++){
             String procesador = "IAAA-" + i;
@@ -101,9 +101,13 @@ public class AdmRobots {
             Random random = new Random();
             int numero = random.nextInt(6) + 1;
             
-            
-            Robot nRobot = new Robot(procesador, numero);
+            if (regla.getActiva()){
+                Robot nRobot = new Robot(procesador, numero, regla.getValorMinimoBateria());
             i++;
+            } else {
+                Robot nRobot = new Robot(procesador, numero, 5);
+            }
+            
             
         }
     return true;

@@ -63,6 +63,16 @@ public class Main {
         //System.out.println(controlAdmin.mostrarDronesMedianteOperador());
         System.out.println(controlAdmin.simulateMedianteOperador());
 
+
+
+
+
+
+
+
+
+
+
         //----------------------------------------- CIERRE PERFIL OPERADOR  -----------------------------------------
 
         //----------------------------------------- PERFIL GENERAL  -----------------------------------------
@@ -83,7 +93,18 @@ public class Main {
 
         //retorna lista, formato [String nombre del edificio, String id ediicio]
         System.out.println(controlAdmin.mayorReincidenciaMedianteGeneral());
-        
+
+
+
+
+
+
+
+
+
+
+
+
         //----------------------------------------- CIERRE PERFIL GENERAL  -----------------------------------------
 
 

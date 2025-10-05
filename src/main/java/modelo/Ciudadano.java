@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
+import logica.CantTareasUsadas;
 /**
  *
  * @author linuxman
@@ -91,7 +92,7 @@ public class Ciudadano {
         return unEdificio.agregarCiudadano(this);
     }
     
-    public boolean pedir_tarea(){
+    public boolean pedir_tarea(CantTareasUsadas cantTareasUsadas){
         Random rand = new Random();
         if (!robots_owned.isEmpty()){
             int indice = rand.nextInt(robots_owned.size());
@@ -110,6 +111,7 @@ public class Ciudadano {
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 5);
+                    cantTareasUsadas.setCantMedico(cantTareasUsadas.getCantMedico()+1);
                     return true;
                 }
                 
@@ -122,6 +124,7 @@ public class Ciudadano {
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 15);
+                    cantTareasUsadas.setCantDormitorio(cantTareasUsadas.getCantDormitorio()+1);
                     return true;
                 }
                 
@@ -134,6 +137,7 @@ public class Ciudadano {
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 10);
+                    cantTareasUsadas.setCantAlimentos(cantTareasUsadas.getCantAlimentos()+1);
                     return true;
                 }
                 
@@ -146,6 +150,7 @@ public class Ciudadano {
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 5);
+                    cantTareasUsadas.setCantPlantas(cantTareasUsadas.getCantPlantas()+1);
                     return true;
                 }
                 
@@ -158,6 +163,7 @@ public class Ciudadano {
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 20);
+                    cantTareasUsadas.setCantPaseo(cantTareasUsadas.getCantPaseo()+1);
                     return true;
                 }
                 
@@ -170,10 +176,11 @@ public class Ciudadano {
                     historial.add(detalle);
                     tareas_hechas += 1;
                     aleatorio.setBateria(aleatorio.getBateria() - 25);
+                    cantTareasUsadas.setCantReunion(cantTareasUsadas.getCantReunion()+1);
                     return true;
                 }
             }
-            if (aleatorio.getBateria() < 0){
+            if (aleatorio.getBateria() <= aleatorio.getValorMinimo()){
                 aleatorio.setEncendido(false); //se apaga y luego admRobots revisa si se debe conectar a alguna estacion disponible
             }
            return false; //el robot no contiene la tarea a realizar 

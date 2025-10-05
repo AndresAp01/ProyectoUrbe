@@ -36,7 +36,19 @@ public class PerfilGeneral {
 
     //RECORDAR
     //SI algun edificio posee un porcentaje de alerta mas grande que un umbral configurable salta alerta
-
+    //Desglose por tarea
+    //retorna la cant de veces que una tarea fue usada en este orden
+    //[medico, domitiroio, listaALimentos, RegarPlantas, Paseo, Reunion]
+    public ArrayList cantTareasUsadas (CantTareasUsadas cantTareasUsadas){
+        ArrayList info = new ArrayList<>();
+        info.add(cantTareasUsadas.getCantMedico());
+        info.add(cantTareasUsadas.getCantDormitorio());
+        info.add(cantTareasUsadas.getCantAlimentos());
+        info.add(cantTareasUsadas.getCantPlantas());
+        info.add(cantTareasUsadas.getCantPaseo());
+        info.add(cantTareasUsadas.getCantReunion());
+        return info;
+    }
     
 
     //parte 2

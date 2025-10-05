@@ -26,8 +26,8 @@ public class PerfilOperador {
         return admDron.mostrarDrones();
     }
 
-    public boolean crearRobots(int nRobots, AdmRobots AdmRobots){
-        return AdmRobots.crearListaRobots(nRobots);
+    public boolean crearRobots(int nRobots, AdmRobots AdmRobots, Regla regla){
+        return AdmRobots.crearListaRobots(nRobots, regla);
     }
 
     public boolean crearCiudadanos(int nCiudadanos, AdmCiudadanos AdmCiudadanos, AdmEdificio AdmEdificio){
@@ -44,8 +44,8 @@ public class PerfilOperador {
         return ciudadano.asignar_robot(robot);
     }
     
-    public boolean simulate(AdmCiudadanos admCiudadanos, AdmRobots admRobots, AdmReglas admReglas, AdmDron admDron, AdmCargaficios admCargaficios, AdmAnomalias admAnomalias, CInteligencia cInteligencia){
-        admCiudadanos.pedirTareas(); //esta funcion recorre cada ciudadano y mediante un random luego pide tarea a los robots que posea (si es que posee) (Ya tarea y todo eso ya hay procesos de registro)
+    public boolean simulate(AdmCiudadanos admCiudadanos, AdmRobots admRobots, AdmReglas admReglas, AdmDron admDron, AdmCargaficios admCargaficios, AdmAnomalias admAnomalias, CInteligencia cInteligencia, CantTareasUsadas cantTareasUsadas  ){
+        admCiudadanos.pedirTareas(cantTareasUsadas); //esta funcion recorre cada ciudadano y mediante un random luego pide tarea a los robots que posea (si es que posee) (Ya tarea y todo eso ya hay procesos de registro)
         admRobots.conectarRobots(admCargaficios); //se llama al AdmCargaficios especifico y se conectan los robots, si este posee disponible, es un booleano, si da false es que no se pudieron conectar todos los robots descargados
         int valorMinimo = 25;
         if (admReglas.getListaReglas().get(0).getActiva()==true){ valorMinimo=admReglas.getListaReglas().get(0).getValorMinimoBateria(); }

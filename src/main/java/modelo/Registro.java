@@ -68,4 +68,5 @@ public class Registro {
                 ", tipo de anomalia: "+tipoAnomalia+
                 "}\n";
     }
+
 }

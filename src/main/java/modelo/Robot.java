@@ -37,9 +37,10 @@ public class Robot {
     private Ciudadano unCiudadano;
     private boolean si_esta_en_alerta;
     private ArrayList<Tarea> posibles_tareas;
+    int valorMinimo;
     
     
-    public Robot (String procesador, int cantidad_tareas){
+    public Robot (String procesador, int cantidad_tareas, int valorMinimo){
         this.procesador = procesador;
         this.bateria = 100;
         this.encendido = true;
@@ -48,7 +49,7 @@ public class Robot {
         this.unCiudadano = null;
         this.si_esta_en_alerta = false;
         this.posibles_tareas = getPosiblesTareas(cantidad_tareas);
-        
+        this.valorMinimo = valorMinimo;
     }
     
     private ArrayList<Tarea> getPosiblesTareas(int cantidad) {
@@ -125,6 +126,9 @@ public class Robot {
 
     public void setPosibles_tareas(ArrayList<Tarea> posibles_tareas) {
         this.posibles_tareas = posibles_tareas;
+    }
+    public int getValorMinimo(){
+        return valorMinimo;
     }
 
     

@@ -72,12 +72,12 @@ public class AdmCiudadanos {
         return total_tareas_rechazadas;
     }
     
-    public void pedirTareas(){
+    public void pedirTareas(CantTareasUsadas cantTareasUsadas){
         Random rand = new Random();
         for (Ciudadano CiudadanoActual: listaCiudadanos){
             int numeroRandom = rand.nextInt(5);
             if (numeroRandom == 3){
-                CiudadanoActual.pedir_tarea();
+                CiudadanoActual.pedir_tarea(cantTareasUsadas);
             }
         }
     }
