@@ -3,9 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package logica;
+import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Map;
 import java.util.Random;
 import java.util.ArrayList;
 import modelo.*;
+
 /**
  *
  * @author linuxman
@@ -39,21 +44,32 @@ public class PerfilOperador {
         return ciudadano.asignar_robot(robot);
     }
     
-    public boolean simulate(AdmCiudadanos admCiudadanos,AdmRobots admRobots,AdmReglas admReglas,AdmDron admDron, AdmCargaficios admCargaficios){
+    public boolean simulate(AdmCiudadanos admCiudadanos, AdmRobots admRobots, AdmReglas admReglas, AdmDron admDron, AdmCargaficios admCargaficios, AdmAnomalias admAnomalias, CInteligencia cInteligencia){
         admCiudadanos.pedirTareas(); //esta funcion recorre cada ciudadano y mediante un random luego pide tarea a los robots que posea (si es que posee) (Ya tarea y todo eso ya hay procesos de registro)
         admRobots.conectarRobots(admCargaficios); //se llama al AdmCargaficios especifico y se conectan los robots, si este posee disponible, es un booleano, si da false es que no se pudieron conectar todos los robots descargados
         int valorMinimo = 25;
-        for (Regla regla : admReglas.getListaReglas()){
-            if (regla.getNombre().equals("Regla 1")&&regla.getActiva()==true){
-                valorMinimo=regla.getValorMinimoBateria();
-            }
-        }
+        if (admReglas.getListaReglas().get(0).getActiva()==true){ valorMinimo=admReglas.getListaReglas().get(0).getValorMinimoBateria(); }
+        admAnomalias.activarAnomalias();
+        boolean huboDron=admDron.enviarDronesAPatrullar(valorMinimo); //Explicame esto Sara ={{ also, debe ser aleatorio, salen a patrullar solo por UNA hora, y si llegan a 0% se asignan a un cargaficio
+        if(!huboDron){System.out.println("Ningún dron salió a patrullar ya que no cumplian con el porcentaje de batería.\n");}
+        ArrayList<Anomalia> listaAnomalias=admAnomalias.getListaAnomalias();
+        ArrayList<Dron> listaDrones = admDron.getListaDrones();
+        if(huboDron) {
+            for (Dron unDron : listaDrones) {
+                if (unDron.getEnPatrulla()) {
+                    for (Anomalia anomalia : listaAnomalias) {
+                        if (anomalia.getAnomaliaActiva()) {
+                            Map<Anomalia, Dron> datos = admDron.retornarAnomalias(anomalia, unDron);
+                            for (Anomalia llave : datos.keySet()) {
+                                cInteligencia.crearRegistro(anomalia, datos.get(llave));}}}}}System.out.println(cInteligencia.getListaRegistros().toString());}
+        else{
+            for (Anomalia anomalia : listaAnomalias) {
+                if (anomalia.getAnomaliaActiva()) {
+                    Registro registro = new Registro(LocalDate.now(), LocalTime.now(), anomalia.getTipoAnomalia());
+                    admAnomalias.agregarRegistroAnomaliaNoDetectada(registro);}}}
         //ahi abajo habia un return lo cambia a adm Cargaficiso
-        admDron.enviarDronesAPatrullar(valorMinimo); //Explicame esto Sara ={{ also, debe ser aleatorio, salen a patrullar solo por UNA hora, y si llegan a 0% se asignan a un cargaficio
-        return admCargaficios.cargarDispositivosConectados(); //carga todo lo que este conectado en la lista interna de cada Cargaficio
-        //AdmDron.encontrarAnomalias(listaAnomalias, listaRegistros); //explicame esta tambien Sara
-
-
+        System.out.println(admAnomalias.toString2());
+        return admCargaficios.cargarDispositivosConectados();
+        //carga todo lo que este conectado en la lista interna de cada Cargaficio
     }
-
 }
