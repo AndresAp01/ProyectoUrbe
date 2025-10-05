@@ -138,13 +138,18 @@ public class AdmAnomalias {
      * Activa aleatoriamente algunas anomalías.
      * @return (boolean) true siempre que se complete el proceso.
      */
-    public boolean activarAnomalias() {
+    public boolean activarAnomalias(ArrayList<Edificio> listaEdificios){
         int valorAComparar = 3;
         Random rand = new Random();
         for (Anomalia anomalia : listaAnomalias) {
-            int probabilidad = rand.nextInt(1, 4);
+            int probabilidad = rand.nextInt(1,4);
             if (probabilidad == valorAComparar) {
                 anomalia.setAnomaliaActiva(true);
+                for (Edificio edificio : listaEdificios) {
+                    if (edificio.getAvenida()==anomalia.getAvenida() || edificio.getCalle()==anomalia.getCalle()) {
+                        edificio.setNProblemasSucedidos(edificio.getN_problemas_sucedidos()+1);
+                    }
+                }
                 System.out.println(anomalia.toString());
             }
         }
@@ -168,3 +173,4 @@ public class AdmAnomalias {
         return "Lista Anomalias no detectadas: \n" + listaAnomaliasNoDetectadas;
     }
 }
+
