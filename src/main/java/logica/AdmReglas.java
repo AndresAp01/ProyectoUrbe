@@ -45,5 +45,4 @@ public class AdmReglas {
     public String toString(){
         return "Lista Reglas: "+listaReglas;
     }
-
 }
