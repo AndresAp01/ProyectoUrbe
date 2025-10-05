@@ -1,17 +1,33 @@
 package logica;
 
 import modelo.Anomalia;
+import modelo.Dron;
+import modelo.Registro;
 import modelo.TipoAnomalia;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class AdmAnomalias {
     private ArrayList<Anomalia> listaAnomalias;
+    private ArrayList<Registro> listaAnomaliasNoDetectadas;
 
-    public AdmAnomalias(){ this.listaAnomalias = new ArrayList<>(); }
+    public AdmAnomalias(){
+        this.listaAnomalias = new ArrayList<>();
+        this.listaAnomaliasNoDetectadas = new ArrayList<>();
+    }
 
     public ArrayList<Anomalia> getListaAnomalias() {
         return listaAnomalias;
+    }
+
+    public boolean agregarRegistroAnomaliaNoDetectada(Registro registro){
+        listaAnomaliasNoDetectadas.add(registro);
+        return true;
+    }
+
+    public ArrayList<Registro> getListaAnomaliasNoDetectadas() {
+        return listaAnomaliasNoDetectadas;
     }
 
     public boolean crearListaAnomalias(int[] listaIndex) {
@@ -24,11 +40,6 @@ public class AdmAnomalias {
             Anomalia nuevaAnomalia = new Anomalia(tipoAnomalia[index]);
             listaAnomalias.add(nuevaAnomalia);
         }
-
-        return true;
-    }
-
-    public boolean agregarAccionAnomalia(String accion) {
 
         return true;
     }
@@ -96,7 +107,22 @@ public class AdmAnomalias {
         return true;
     }
 
+    public boolean activarAnomalias(){
+        int valorAComparar = 3;
+        Random rand = new Random();
+        for (Anomalia anomalia : listaAnomalias) {
+            int probabilidad = rand.nextInt(1,4);
+            if (probabilidad == valorAComparar) {
+                anomalia.setAnomaliaActiva(true);
+                System.out.println(anomalia.toString());
+            }
+        }
+        return true;
+    }
+
     @Override
     public String toString() { return "Lista Anomalias: \n" + listaAnomalias; }
+
+    public String toString2() {return "Lista Anomalias no detectadas: \n"+listaAnomaliasNoDetectadas; }
 
 }
