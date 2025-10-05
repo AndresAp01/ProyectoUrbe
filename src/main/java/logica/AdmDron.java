@@ -6,6 +6,8 @@ import modelo.Edificio;
 import modelo.Registro;
 
 import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -59,22 +61,11 @@ public class AdmDron {
         return true;
     }
 
-    public Dron encontrarAnomalias(ArrayList<Anomalia> listaAnomalias,ArrayList<Registro> listaRegistros){
-
-        for (Dron unDron : listaDrones){
-            if (unDron.getEnPatrulla()){
-                for (Anomalia anomalia : listaAnomalias){
-                    /*
-                    if (anomalia.getCalle()==unDron.getEdificioPatrullado().getCalle()||anomalia.getAvenida()==unDron.getEdificioPatrullado().getAvenida()){
-                        return unDron;
-
-                    }
-                    */
-                    System.out.println(anomalia);
-                }
-            }
-        }
-        return null;
+    public Map retornarAnomalias(Anomalia anomalia, Dron unDron){
+        Map<Anomalia,Dron> datos =new HashMap<>();
+        System.out.println(anomalia.getAnomaliaActiva());
+        datos.put(anomalia,unDron);
+        return datos;
     }
 
     public Dron buscarDronApto(ArrayList<Dron> listaMomentanea){
@@ -98,15 +89,14 @@ public class AdmDron {
             while (elDron==null){
                 elDron= buscarDronApto(listaMomentanea);
             }
-            System.out.println(elDron.toString());
             listaMomentanea.add(elDron);
         }
         return listaMomentanea;
     }
 
     public boolean enviarDronesAPatrullar(int valorMinimoBateria){
+        boolean hubo=false;
         ArrayList <Dron> listaDeDronesRandom=crearListaMomentanea();
-        System.out.println(listaDeDronesRandom.toString());
         for (Dron unDron : listaDeDronesRandom) {
             if ((unDron.getBateria() - 25) <= valorMinimoBateria) {
                 unDron.enviarDronARecargar();
@@ -114,9 +104,11 @@ public class AdmDron {
                 unDron.setEnPatrulla(true);
                 unDron.setBateria(unDron.getBateria() - 25);
                 unDron.setHorasVueloRestantes(unDron.getHorasVueloRestantes()-1);
+                hubo=true;
+                System.out.println(unDron.toString());
             }
         }
-        return true;
+        return hubo;
     }
 
     public boolean mostrarDrones(){
@@ -125,8 +117,4 @@ public class AdmDron {
         }
         return true;
     }
-
-
-
-
 }
